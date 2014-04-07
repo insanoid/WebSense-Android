@@ -1,6 +1,8 @@
 package com.uob.websense;
 
 
+import com.uob.websense.adapter.SpinnerAdapter;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
@@ -79,14 +81,14 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-
-		actionBar.setListNavigationCallbacks(
-				new ArrayAdapter<String>(actionBar.getThemedContext(),
-						android.R.layout.simple_list_item_1,
-						android.R.id.text1, new String[] {
-					getString(R.string.sub_section_title1),
-					getString(R.string.sub_section_title2),
-					getString(R.string.sub_section_title3), }), this);
+		
+		SpinnerAdapter mySpinnerArrayAdapter = new SpinnerAdapter(actionBar.getThemedContext(), new String[] {
+			getString(R.string.sub_section_title1),
+			getString(R.string.sub_section_title2),
+			getString(R.string.sub_section_title3), });  
+		//mySpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		actionBar.setListNavigationCallbacks(mySpinnerArrayAdapter, this);
 
 	}
 

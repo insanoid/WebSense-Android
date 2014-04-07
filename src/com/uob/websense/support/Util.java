@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONException;
 import org.json.JSONTokener;
 
+import com.uob.websense.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -97,13 +99,13 @@ public class Util {
 	                overrideFonts(context, child);
 	            }
 	        } else if (v instanceof EditText) {
-	            ((EditText)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Light.ttf"));
+	            ((EditText)v).setTypeface( Typeface.createFromAsset(context.getAssets(),Constants.FONT_REGLUAR));
 	        }else if (v instanceof TextView) {
-	            ((TextView)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Bold.ttf"));
+	            ((TextView)v).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_LIGHT));
 	        }else if (v instanceof CheckBox) {
-	            ((CheckBox)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Regular.ttf"));
+	            ((CheckBox)v).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_LIGHT));
 	        }else if (v instanceof Button) {
-	            ((Button)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Bold.ttf"));
+	            ((Button)v).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_BOLD));
 	            
 	        }
 	    } catch (Exception e) {
@@ -111,6 +113,32 @@ public class Util {
 	        // ignore
 	    }
 	}
+	
+	
+	public static void fixCellFont(final Context context, final View v) {
+	    try {
+	    	
+	    	TextView title = (TextView)v.findViewById(R.id.title);
+	    	((TextView)title).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_BOLD));
+	    	
+	    	TextView sub_title = (TextView)v.findViewById(R.id.sub_title);
+	    	((TextView)sub_title).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_REGLUAR));
+	    	
+	    	TextView accTxt = (TextView)v.findViewById(R.id.acc_txt);
+	    	
+	    	if(accTxt!=null)
+	    		((TextView)accTxt).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_BOLD)); 	
+	    	
+	   
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // ignore
+	    }
+	}
+	
+	
+	
+	
 
 	
 	public static void showAlert(int alertMessage, Context ctx){

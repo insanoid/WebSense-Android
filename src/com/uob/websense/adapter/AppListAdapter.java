@@ -61,6 +61,9 @@ public class AppListAdapter  extends BaseAdapter {
 		if(convertView==null)
 			vi = inflater.inflate(R.layout.app_info_list_item, null);
 		
+		
+		Util.fixCellFont(ctx, vi);
+		
 		final TextView title = (TextView)vi.findViewById(R.id.title);
 		final TextView sub_title = (TextView)vi.findViewById(R.id.sub_title);
 		final TextView acc_txt = (TextView)vi.findViewById(R.id.acc_txt);
@@ -109,9 +112,9 @@ public class AppListAdapter  extends BaseAdapter {
 					progressBar.setProgressDrawable(ctx.getResources().getDrawable(R.drawable.apptheme_progress_horizontal_holo_light_hightlighted));
 				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
 					title.setTextColor(ctx.getResources().getColor(R.color.black));
-					sub_title.setTextColor(ctx.getResources().getColor(R.color.black));
+					sub_title.setTextColor(ctx.getResources().getColor(R.color.light_gray));
 					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
-					acc_txt.setTextColor(ctx.getResources().getColor(R.color.brand_green));
+					acc_txt.setTextColor(ctx.getResources().getColor(R.color.dark_green));
 					progressBar.setProgressDrawable(ctx.getResources().getDrawable(R.drawable.apptheme_progress_horizontal_holo_light));
 					
 				}

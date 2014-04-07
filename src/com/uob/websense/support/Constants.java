@@ -30,4 +30,8 @@ public class Constants {
 	public final static String WEB_TRENDS_DAILY  = "app/trends";
 	public final static String WEB_TRENDS_WEEKLY = "app/trends";
 	public final static String WEB_TRENDS_MONTHLY = "app/trends";
+	
+	public final static String FONT_BOLD = "ProximaNova-Semibold.otf";
+	public final static String FONT_LIGHT = "ProximaNova-Light.otf";
+	public final static String FONT_REGLUAR = "ProximaNova-Regular.otf";
 }

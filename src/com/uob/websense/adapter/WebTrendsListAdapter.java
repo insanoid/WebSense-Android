@@ -85,7 +85,7 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.white));
 				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
 					title.setTextColor(ctx.getResources().getColor(R.color.black));
-					sub_title.setTextColor(ctx.getResources().getColor(R.color.black));
+					sub_title.setTextColor(ctx.getResources().getColor(R.color.light_gray));
 					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
 					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.brand_green));
 				}

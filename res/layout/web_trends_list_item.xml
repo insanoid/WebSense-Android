@@ -25,7 +25,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="Some text goes here"
         android:textColor="#040404"
         android:textSize="17sp"
         android:textStyle="bold"
@@ -39,8 +38,7 @@
         android:layout_below="@id/title"
         android:layout_toRightOf="@+id/thumbnail"
         android:layout_marginTop="1dip"
-        android:text="Some text goes here"
-        android:textColor="#343434"
+        android:textColor="@color/light_gray"
         android:textSize="12sp" />
 
 

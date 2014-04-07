@@ -191,6 +191,7 @@ public class AppUsageMonitor extends IntentService {
 
 	public void pushCurrentItem() {
 		
+		if(currentTask!=null){
 		long seconds = System.currentTimeMillis();
 		currentTask.setEndTime(seconds);
 		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
@@ -199,6 +200,7 @@ public class AppUsageMonitor extends IntentService {
 		appDataProvider.save(currentTask);
 		appDataProvider.close();
 		currentTask = null;
+		}
 		
 	}
 

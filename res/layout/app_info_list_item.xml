@@ -26,7 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="Some text goes here"
         android:textColor="#040404"
         android:textSize="17sp"
         android:textStyle="bold" />
@@ -38,8 +37,7 @@
         android:layout_below="@id/title"
         android:layout_marginTop="1dip"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="Some text goes here"
-        android:textColor="#343434"
+        android:textColor="@color/light_gray"
         android:textSize="12sp" />
 
     <TextView
@@ -54,7 +52,7 @@
         android:shadowDy="1"
         android:shadowDx="0"
         android:shadowRadius="1"
-        android:textColor="@color/brand_green"
+        android:textColor="@color/dark_green"
         android:textSize="12sp"
         android:textStyle="bold" />
 

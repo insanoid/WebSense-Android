@@ -67,7 +67,7 @@ public class AppTrendsListAdapter  extends BaseAdapter {
 		title.setText(app.getApplicationName());
 		sub_title.setText(app.getCategory());
 		//acc_txt.setText("Installed");
-		
+
 		thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_launcher));
 		imageLoader.displayImage(app.getApplicationIconURL(), thumb_image);
 		vi.setOnTouchListener(new OnTouchListener() {
@@ -80,12 +80,12 @@ public class AppTrendsListAdapter  extends BaseAdapter {
 					title.setTextColor(ctx.getResources().getColor(R.color.white));
 					sub_title.setTextColor(ctx.getResources().getColor(R.color.gray));
 					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.white));
-					} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
 					title.setTextColor(ctx.getResources().getColor(R.color.black));
-					sub_title.setTextColor(ctx.getResources().getColor(R.color.black));
+					sub_title.setTextColor(ctx.getResources().getColor(R.color.light_gray));
 					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
 					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.brand_green));
-					}
+				}
 
 				return true;
 			}
