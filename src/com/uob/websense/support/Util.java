@@ -7,8 +7,11 @@ import org.json.JSONTokener;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.Typeface;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +99,7 @@ public class Util {
 	        } else if (v instanceof EditText) {
 	            ((EditText)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Light.ttf"));
 	        }else if (v instanceof TextView) {
-	            ((TextView)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Regular.ttf"));
+	            ((TextView)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Bold.ttf"));
 	        }else if (v instanceof CheckBox) {
 	            ((CheckBox)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Regular.ttf"));
 	        }else if (v instanceof Button) {
@@ -109,5 +112,25 @@ public class Util {
 	    }
 	}
 
+	
+	public static void showAlert(int alertMessage, Context ctx){
+		
+		if(ctx==null)
+			return;
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+		builder.setMessage(ctx.getApplicationContext().getString(alertMessage));
+		builder.setNegativeButton("Close", new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+
+			}
+		});
+		builder.setCancelable(true);
+		AlertDialog alert = builder.create();
+		alert.show();
+	}
 
 }

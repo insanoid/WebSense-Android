@@ -5,7 +5,7 @@
     android:background="#eaeaea" >
 
    <ListView
-            android:id="@+id/app_usage_list"
+            android:id="@+id/app_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"

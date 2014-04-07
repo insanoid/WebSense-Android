@@ -161,7 +161,8 @@ public class ObscuredSharedPreferences implements SharedPreferences {
 
 
 
-    protected String encrypt( String value ) {
+    @SuppressWarnings("deprecation")
+	protected String encrypt( String value ) {
 
         try {
             final byte[] bytes = value!=null ? value.getBytes(UTF8) : new byte[0];
@@ -176,7 +177,8 @@ public class ObscuredSharedPreferences implements SharedPreferences {
         }
 
     }
-
+    
+    @SuppressWarnings("deprecation")
     protected String decrypt(String value){
         try {
             final byte[] bytes = value!=null ? Base64.decode(value,Base64.DEFAULT) : new byte[0];

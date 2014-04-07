@@ -7,187 +7,144 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.uob.websense.adapter.WebTrendsListAdapter;
 import com.uob.websense.data_models.WebVistModel;
+import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 import com.uob.websense.web_service_manager.WebSenseRestClient;
 
-public class WebTrendsFragment extends Fragment {
+public class WebTrendsFragment extends ListProgressFragment {
 
-	private WebTrendsListAdapter appListAdapter;
-	ListView applist;
-	ProgressBar loadingSpinner;
-	ArrayList<WebVistModel> appList;
-	
+	private WebTrendsListAdapter webListAdapter;
+	ArrayList<WebVistModel> webList;
+
+
 	public static WebTrendsFragment newInstance() {
 		WebTrendsFragment fragment = new WebTrendsFragment();
 		return fragment;
 	}
 
+	public static WebTrendsFragment newInstance(int _type) {
+		WebTrendsFragment fragment = new WebTrendsFragment();
+		fragment.navigationTabIndex = _type;
+		return fragment;
+	}
+
 	public WebTrendsFragment() {
+
 	}
 
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-	    setHasOptionsMenu(true);
-	    
-		View rootView = inflater.inflate(R.layout.fragment_app_trends, container,
-				false);
-		
-		applist = (ListView) rootView.findViewById(R.id.app_trends_list);
-		loadingSpinner = (ProgressBar)rootView.findViewById(R.id.loading_spinner);
-		
-        applist.setVisibility(View.GONE);
-        
-        loadContent();
-        
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		rootView = super.onCreateView(inflater, container, savedInstanceState,R.layout.fragment_app_trends);		
+		applist.setVisibility(View.GONE);
+		loadRemoteContent();
 		return rootView;
 	}
 
-	private void loadContent() {
-		WebSenseRestClient.get("web/trends", null, new JsonHttpResponseHandler() {
+	private void loadRemoteContent() {
+
+		String requestMethod = null;
+		if(navigationTabIndex==0){
+			requestMethod = Constants.WEB_TRENDS_DAILY;
+		}else if(navigationTabIndex==0){
+			requestMethod = Constants.WEB_TRENDS_WEEKLY;
+		}else if(navigationTabIndex==0){
+			requestMethod = Constants.WEB_TRENDS_MONTHLY;
+		}else{
+			requestMethod = Constants.WEB_TRENDS_DAILY;
+		}
+
+		WebSenseRestClient.get(requestMethod, null, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
 
 				Object response;
 				try {
 					response = Util.parseResponse(responseString);
-					appList = new ArrayList<WebVistModel>();
+					webList = new ArrayList<WebVistModel>();
 					if (response instanceof JSONArray) {
-						
+
 						for(int i=0;i<((JSONArray)response).length();i++){
 							JSONObject j = ((JSONArray) response).getJSONObject(i);
 							WebVistModel app = new WebVistModel(j);
-							appList.add(app);
+							webList.add(app);
 						}
 
 					}else{
-						showAlert(getActivity().getApplicationContext().getString(R.string.server_error));
+						try{
+							Util.showAlert(R.string.server_error,getActivity());
+						}catch(Exception e){
+
+						}
 					}
 
 				} catch (JSONException e) {
-					showAlert(getActivity().getApplicationContext().getString(R.string.server_error));
-					// TODO Auto-generated catch block
+					try{
+						Util.showAlert(R.string.server_error,getActivity());
+					}catch(Exception e1){
+
+					}
 					e.printStackTrace();
 				}
-				crossfade();
-				loadAdapter();
+				showListAnimated(applist, loadingSpinner);
+				reloadAdapter();
 			}
 
 
 			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-				crossfade();
-				showAlert(getActivity().getApplicationContext().getString(R.string.server_error));
-				loadAdapter();
+				showListAnimated(applist, loadingSpinner);
+				try{
+					Util.showAlert(R.string.server_error,getActivity());
+				}catch(Exception e){
+
+				}
+				reloadAdapter();
 			}
 
 
 		});
 	}
-	
-	
-	public void showAlert(String alertMessage){
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-		builder.setMessage(alertMessage);
-		builder.setNegativeButton("Close", new OnClickListener() {
 
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
+	private void reloadAdapter() {
+		if(webList!=null){
+			webListAdapter  = new WebTrendsListAdapter(getActivity(),webList, getActivity().getApplicationContext());
+			applist.setAdapter(webListAdapter);
 
-			}
-		});
-		builder.setCancelable(true);
-		AlertDialog alert = builder.create();
-		alert.show();
-	}
+			applist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+					Uri uri = Uri.parse(webList.get(position).getCompleteURL());
+					Log.d("---->",uri+"-");
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					startActivity(intent);
+				}
+			});
 
-	private void loadAdapter() {
-		
-		if(appList!=null){
-			appListAdapter  = new WebTrendsListAdapter(getActivity(),appList, getActivity().getApplicationContext());
-			applist.setAdapter(appListAdapter);
-			applist.setOnItemClickListener(new OnItemClickListener() {
-
-	            public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-	                    long arg3) {
-	            	
-	            	Uri uri = Uri.parse(appList.get(pos).getCompleteURL());
-	            	Log.d("---->",uri+"-");
-	    	        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-	    	        startActivity(intent);
-
-	            }
-	        });
 		}
-		
-		
-	}
-	
-	@SuppressLint("NewApi")
-	private void crossfade() {
-
-	    // Set the content view to 0% opacity but visible, so that it is visible
-	    // (but fully transparent) during the animation.
-		applist.setAlpha(0f);
-		applist.setVisibility(View.VISIBLE);
-
-	    // Animate the content view to 100% opacity, and clear any animation
-	    // listener set on the view.
-		applist.animate()
-	            .alpha(1f)
-	            .setDuration(2)
-	            .setListener(null);
-
-	    // Animate the loading view to 0% opacity. After the animation ends,
-	    // set its visibility to GONE as an optimization step (it won't
-	    // participate in layout passes, etc.)
-	    loadingSpinner.animate()
-	            .alpha(0f)
-	            .setDuration(2)
-	            .setListener(new AnimatorListenerAdapter() {
-	                @Override
-	                public void onAnimationEnd(Animator animation) {
-	                	loadingSpinner.setVisibility(View.GONE);
-	                }
-	            });
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
+
 		int id = item.getItemId();
 		if (id == R.id.action_refresh) {
-			loadAdapter();
-			applist.setAdapter(appListAdapter);
-			crossfade();
-			
+			showListAnimated(loadingSpinner,applist);
+			loadRemoteContent();
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
 }

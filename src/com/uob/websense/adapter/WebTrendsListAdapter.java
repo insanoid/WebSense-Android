@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.opengl.Visibility;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,8 +17,6 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.uob.websense.R;
-import com.uob.websense.app_monitoring.AppMonitorUtil;
-import com.uob.websense.data_models.AppUsageInformationModel;
 import com.uob.websense.data_models.WebVistModel;
 
 public class WebTrendsListAdapter  extends BaseAdapter {

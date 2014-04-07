@@ -2,10 +2,16 @@
 <resources>
 
     <string name="app_name">WebSense</string>
+    
     <string name="title_section1">My App Usage</string>
     <string name="title_section2">App Usage Trends</string>
     <string name="title_section3">Web Trends</string>
     <string name="action_refresh">Refresh</string>
+    
+    <string name="sub_section_title1">Today</string>
+    <string name="sub_section_title2">This Week</string>
+    <string name="sub_section_title3">This Month</string>
+    
     
     <string name="login">Login</string>
     <string name="login_error">Please fill in all the values before you register.</string>
@@ -22,5 +28,10 @@
         <item>Self-Employed</item>
         <item>Normal Employed</item>
     </string-array>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
