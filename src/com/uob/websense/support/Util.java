@@ -1,12 +1,22 @@
 package com.uob.websense.support;
 
+import java.util.concurrent.TimeUnit;
+
 import org.json.JSONException;
 import org.json.JSONTokener;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 
 public class Util {
 
@@ -40,7 +50,7 @@ public class Util {
 		return result;
 	}
 
-	
+
 	public static void saveSecurePreference(Context ctx,String value, String key){
 		final SharedPreferences prefs = new ObscuredSharedPreferences( 
 				ctx, 
@@ -49,7 +59,7 @@ public class Util {
 		prefs.edit().putString(key,value).commit();
 	}
 
-	
+
 	public static String getSecurePreference(Context ctx, String key){
 		final SharedPreferences prefs = new ObscuredSharedPreferences( 
 				ctx, 
@@ -57,5 +67,47 @@ public class Util {
 				);    
 		return prefs.getString(key, null);
 	}
+
+
+	@SuppressLint("NewApi")
+	public static String calculateTime(long seconds) {
+
+		long hours = TimeUnit.SECONDS.toHours(seconds);
+		long minute = TimeUnit.SECONDS.toMinutes(seconds) - (TimeUnit.SECONDS.toHours(seconds)* 60);
+
+		if(minute <= 0 ){
+			return "less then a min.";
+		}else if(hours <= 0){
+			return minute + " min.";
+		}else{
+			return + hours+ " hr " + minute + " min.";
+		}
+
+	}
+
+	public static void overrideFonts(final Context context, final View v) {
+	    try {
+	        if (v instanceof ViewGroup) {
+	            ViewGroup vg = (ViewGroup) v;
+	            for (int i = 0; i < vg.getChildCount(); i++) {
+	                View child = vg.getChildAt(i);
+	                overrideFonts(context, child);
+	            }
+	        } else if (v instanceof EditText) {
+	            ((EditText)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Light.ttf"));
+	        }else if (v instanceof TextView) {
+	            ((TextView)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Regular.ttf"));
+	        }else if (v instanceof CheckBox) {
+	            ((CheckBox)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Regular.ttf"));
+	        }else if (v instanceof Button) {
+	            ((Button)v).setTypeface( Typeface.createFromAsset(context.getAssets(), "Sansation_Bold.ttf"));
+	            
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        // ignore
+	    }
+	}
+
 
 }

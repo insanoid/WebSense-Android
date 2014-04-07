@@ -1,12 +1,15 @@
 package com.uob.websense.app_monitoring;
 
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
@@ -17,11 +20,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
 import com.uob.websense.data_models.AppUsageInformationModel;
+import com.uob.websense.data_storage.SensorDataWriter;
 import com.uob.websense.support.Constants;
 
 
@@ -33,7 +38,7 @@ public class AppUsageMonitor extends IntentService {
 	private static long screenClosedTime = 0L;
 	private BroadcastReceiver mPowerKeyReceiver = null;
 	private Timer timer = null;
-	
+
 	public AppUsageMonitor(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
@@ -58,7 +63,7 @@ public class AppUsageMonitor extends IntentService {
 
 	@Override
 	public void onStart(Intent intent, int startid) {
-		
+
 	}
 
 	@Override
@@ -71,8 +76,7 @@ public class AppUsageMonitor extends IntentService {
 	@SuppressLint("NewApi")
 	@Override
 	public void onTaskRemoved(Intent rootIntent){
-		//Write to file whatever u have.
-
+		pushCurrentItem();
 		super.onTaskRemoved(rootIntent);
 	}
 
@@ -103,7 +107,7 @@ public class AppUsageMonitor extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 
-		Log.i(Constants.APP_SERVICE_TAG, "Created Service.");
+		Log.i(Constants.LOG_TAG, "Created Service.");
 		screenActivityDate = new Date();
 
 		final IntentFilter theFilter = new IntentFilter();
@@ -127,12 +131,12 @@ public class AppUsageMonitor extends IntentService {
 		};
 
 		getApplicationContext().registerReceiver(mPowerKeyReceiver, theFilter);
-		timer = new Timer("SERVICE_MONITOR_TAG");
+		timer = new Timer(Constants.LOG_TAG);
 		timer.schedule(updateTask, 1000L, Constants.TASK_POLLER_TIMER);
 
 	}
 
-	
+
 	private TimerTask updateTask = new TimerTask() {
 		@Override
 		public void run() {
@@ -142,28 +146,28 @@ public class AppUsageMonitor extends IntentService {
 
 			if (isScreenOn) {
 				AppMonitorUtil appMonitor = new AppMonitorUtil();
-				HashMap<String, String>response = appMonitor.getTopPackageName(UsageMonitoringService.this);
+				HashMap<String, String>response = appMonitor.getTopPackageName(AppUsageMonitor.this);
+				
 				
 				if(!(currentTask!=null && currentTask.getApplicationPackageName()!=null)){
 					initialiseCurrentItem(response);
 				}
 
 				if(currentTask.getApplicationPackageName().equalsIgnoreCase(response.get(Constants.APP_PACKAGE_NAME_TAG))){
-					currentTask.setCurrentAcitivtyRunningTime(currentTask.getCurrentAcitivtyRunningTime()+kTimerInterval);	
+					Log.d("currentTask.getCurrentAcitivtyRunningTime()",currentTask.getCurrentAcitivtyRunningTime()+"");
+					currentTask.setCurrentAcitivtyRunningTime(currentTask.getCurrentAcitivtyRunningTime()+ Constants.TASK_POLLER_TIMER);	
 				}else{
 					pushCurrentItem();
 					initialiseCurrentItem(response);
 				}
-
+				Log.i("Log App:","<"+currentTask.getApplicationName()+">:["+currentTask.getApplicationPackageName()+"]");
 
 				if(appMonitor.isBrowser(currentTask.getApplicationPackageName())){
 					try {
-						String last_accessed_url = appMonitor.getLastAccessedBrowserPage(UsageMonitoringService.this);
+						String last_accessed_url = appMonitor.getLastAccessedBrowserPage(AppUsageMonitor.this);
 						URL hostURL = new URL(last_accessed_url);
 
 						if(hostURL.equals(currentTask.getAssociatedURIResource()) || currentTask.getAssociatedURIResource()==null){
-							//Do nothing for now if same URL. 
-							//In future if too long it has been on the same page then gather more information.
 							currentTask.setAssociatedURIResource(hostURL);
 						}else{
 							pushCurrentItem();
@@ -186,40 +190,48 @@ public class AppUsageMonitor extends IntentService {
 
 
 	public void pushCurrentItem() {
-		taskList.add(currentTask);
+		
+		long seconds = System.currentTimeMillis();
+		currentTask.setEndTime(seconds);
+		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
+		appDataProvider.createDatabase();
+		appDataProvider.open();
+		appDataProvider.save(currentTask);
+		appDataProvider.close();
 		currentTask = null;
+		
 	}
 
+	 @SuppressWarnings("resource")
+	public void exportDB(){
+	    try {
+	        File sd = Environment.getExternalStorageDirectory();
+	        if (sd.canWrite()) {
+	        	
+
+	            String currentDBPath = "/data/data/com.uob.websense/databases/APP_INFO.sqlite";
+	            String backupDBPath = sd + "/temp/filename.db";
+	            File currentDB = new File(currentDBPath);
+	            File backupDB = new File(backupDBPath);
+
+	            if (currentDB.exists()) {
+	               
+					FileChannel src = new FileInputStream(currentDB).getChannel();
+	                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+	                dst.transferFrom(src, 0, src.size());
+	                src.close();
+	                dst.close();
+	                }
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	public void sendIntentNotification() {
-
-		StringBuilder b = new StringBuilder();
-
-
-		HashMap<String, Long>timeMap = new HashMap<String, Long>();
-		timeMap.put(currentTask.getApplicationName(), currentTask.getCurrentAcitivtyRunningTime());
-		for(AppUsageInformationModel m:taskList){
-			if(timeMap.containsKey(m.getApplicationName())){
-				timeMap.put(m.getApplicationName(), timeMap.get(m.getApplicationName())+m.getCurrentAcitivtyRunningTime());
-			}else{
-				timeMap.put(m.getApplicationName(),m.getCurrentAcitivtyRunningTime());
-			}
-		}
-
-		for(String m:timeMap.keySet()){
-			try{
-				b.append(m + " - "+String.format("%d min, %d sec\n", 
-						TimeUnit.MILLISECONDS.toMinutes(timeMap.get(m)),
-						TimeUnit.MILLISECONDS.toSeconds(timeMap.get(m)) - 
-						TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timeMap.get(m)))
-						));
-			}catch(Exception e){
-
-			}
-		}
-
-
-		Intent proxIntent = new Intent("CONTENT_CHANGE");  
-		proxIntent.putExtra("CONTENT",b.toString());
+		//Send Broadcast notifying about new app event.
+		Intent proxIntent = new Intent(Constants.APP_CONTENT_CHANGE);  
+		proxIntent.putExtra(Constants.APP_INFO_KEY,currentTask);
 		sendBroadcast(proxIntent);
 	}
 
@@ -232,6 +244,9 @@ public class AppUsageMonitor extends IntentService {
 
 		currentTask = new AppUsageInformationModel();
 		currentTask.setCurrentAcitivtyRunningTime(0L);
+		long seconds = System.currentTimeMillis();
+		
+		currentTask.setStartTime(seconds);
 		currentTask.setApplicationName(appInfo.get(Constants.APP_NAME_TAG));
 		currentTask.setApplicationPackageName(appInfo.get(Constants.APP_PACKAGE_NAME_TAG));
 	}

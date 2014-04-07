@@ -1,5 +1,6 @@
 package com.uob.websense.app_monitoring;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,10 +79,9 @@ public class AppMonitorUtil {
 		try {
 
 			appNameSequence = manager.getApplicationLabel(manager.getApplicationInfo(taskInfo.get(0).baseActivity.getPackageName() , PackageManager.GET_META_DATA));
-
 			HashMap<String, String> response = new HashMap<String, String>();
 			response.put(Constants.APP_NAME_TAG, appNameSequence.toString());
-			response.put(Constants.APP_SERVICE_TAG, taskInfo.get(0).baseActivity.getPackageName());
+			response.put(Constants.APP_PACKAGE_NAME_TAG, taskInfo.get(0).baseActivity.getPackageName());
 			return response;
 
 		} catch (NameNotFoundException e) {
@@ -147,5 +147,17 @@ public class AppMonitorUtil {
 	public static void sendCurrentTaskNotification(AppUsageInformationModel currentTaskObject, Context ctx){
 
 	}
+	
+	public static long getTotalForTasks(ArrayList<AppUsageInformationModel> apps){
+		long sum = 0;
+		
+		for(AppUsageInformationModel app: apps){
+			sum +=app.getCurrentAcitivtyRunningTime();
+		}
+		
+		return sum;
+	}
+	
+	
 
 }

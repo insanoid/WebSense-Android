@@ -13,12 +13,12 @@ public class WebSenseRestClient {
 		  private static AsyncHttpClient client = new AsyncHttpClient();
 
 		  public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-			  Log.d("WebSenseRestClient:",getAbsoluteUrl(url)+" - "+params.toString());
+			//  Log.d("WebSenseRestClient:",getAbsoluteUrl(url)+" - "+params!=null?params.toString():"");
 		      client.get(getAbsoluteUrl(url), params, responseHandler);
 		  }
 
 		  public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-			  Log.d("WebSenseRestClient:",getAbsoluteUrl(url)+" - "+params.toString());
+			 // Log.d("WebSenseRestClient:",getAbsoluteUrl(url)+" - "+params!=null?params.toString():"");
 		      client.post(getAbsoluteUrl(url), params, responseHandler);
 		  }
 
