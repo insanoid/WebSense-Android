@@ -16,8 +16,8 @@
         <ImageView
             android:id="@+id/list_image"
             android:background="@drawable/ic_action_refresh"
-            android:layout_width="40dip"
-            android:layout_height="40dip" />
+            android:layout_width="24dip"
+            android:layout_height="25dip" />
     </LinearLayout>
 
     <TextView
@@ -26,8 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_toRightOf="@+id/thumbnail"
-        android:text="Some text goes here"
-        android:textColor="#040404"
+        android:textColor="@color/darker_gray"
         android:textSize="14sp"
         android:textStyle="bold" />
 

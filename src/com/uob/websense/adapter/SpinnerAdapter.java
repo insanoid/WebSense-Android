@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.uob.websense.support.Constants;
@@ -39,8 +38,7 @@ public class SpinnerAdapter extends ArrayAdapter {
 	    }
 
 	    public TextView getDropDownView(int position, View convertView, ViewGroup parent) {
-	        //TextView v = (TextView) super.getView(position, convertView, parent);
-	        
+	    	
 	        View v = convertView;
 			if (v == null) {
 				v = mInflater.inflate(android.R.layout.simple_list_item_1, null);
@@ -49,52 +47,7 @@ public class SpinnerAdapter extends ArrayAdapter {
 			((TextView) v).setTypeface(currentFont);
 			((TextView) v).setText("" + items[position]);
 	        return (TextView) v;
-	    }
-/*
-	    
-	public View getView(int position, View convertView, ViewGroup parent) {
-		final ListContent holder;
-		View v = convertView;
-		if (v == null) {
-			v = mInflater.inflate(android.R.layout.simple_dropdown_item_1line, null);
-			holder = new ListContent();
-
-			holder.name = (TextView) v.findViewById(android.R.id.text1);
-
-			v.setTag(holder);
-		} else {
-
-			holder = (ListContent) v.getTag();
-		}
-
-		holder.name.setTypeface(currentFont);
-		holder.name.setText("" + items[position]);
-
-		return v;   
-	}
-	*/
-//	  public TextView getDropDownView(int position, View convertView, ViewGroup parent) {
-//		  View v = convertView;
-//		  final ListContent holder;
-//			if (v == null) {
-//				v = mInflater.inflate(android.R.layout.simple_dropdown_item_1line, null);
-//				holder = new ListContent();
-//
-//				holder.name = (TextView) v.findViewById(android.R.id.text1);
-//
-//				v.setTag(holder);
-//			} else {
-//
-//				holder = (ListContent) v.getTag();
-//			}
-//
-//			holder.name.setTypeface(currentFont);
-//			holder.name.setText("" + items[position]);
-//
-//			return v;   
-//	    }
-
-	  
+	    } 
 
 	@Override
 	public int getCount() {

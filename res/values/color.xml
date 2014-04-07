@@ -22,4 +22,6 @@
     <color name="brand_pink">#ee4f6b</color>
     <color name="dark_gray">#4c4c4c</color>
     <color name="dark_green">#00aa62</color>
+    <color name="darker_gray">#293134</color>
+
 </resources>

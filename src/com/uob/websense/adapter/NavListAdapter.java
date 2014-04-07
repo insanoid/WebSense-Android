@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.uob.websense.R;
+import com.uob.websense.support.Util;
 
 public class NavListAdapter  extends BaseAdapter {
 
@@ -54,6 +55,7 @@ public class NavListAdapter  extends BaseAdapter {
 		if(convertView==null)
 			vi = inflater.inflate(R.layout.nav_list_item, null);
 
+		Util.fixCellFont(ctx, vi);
 		final TextView title = (TextView)vi.findViewById(R.id.title);
 		ImageView thumb_image=(ImageView)vi.findViewById(R.id.list_image);
 
@@ -61,7 +63,7 @@ public class NavListAdapter  extends BaseAdapter {
 		app = data.get(position);
 
 		title.setText(app.get("TITLE"));
-
+		
 		try {
 			int iconId = Integer.parseInt(app.get("ICON"));
 			Drawable icon;
@@ -82,7 +84,7 @@ public class NavListAdapter  extends BaseAdapter {
 		});
 
 		vi.setOnTouchListener(new OnTouchListener() {
-
+			
 			@SuppressLint("NewApi")
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -90,10 +92,9 @@ public class NavListAdapter  extends BaseAdapter {
 					v.setBackgroundColor(ctx.getResources().getColor(R.color.brand_green));
 					title.setTextColor(ctx.getResources().getColor(R.color.white));
 				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-					title.setTextColor(ctx.getResources().getColor(R.color.black));
+					title.setTextColor(ctx.getResources().getColor(R.color.darker_gray));
 					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
 				}
-
 				return true;
 			}
 		});
