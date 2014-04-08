@@ -2,7 +2,6 @@ package com.uob.websense;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
@@ -23,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,26 +95,21 @@ public class NavigationDrawerFragment extends Fragment {
 			Bundle savedInstanceState) {
 		mDrawerListView = (ListView) inflater.inflate(
 				R.layout.fragment_navigation_drawer, container, false);
-		mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				selectItem(position);
-			}
-		});
+		
 		
 		
 		
 		HashMap<String, String> items_1 = new HashMap<String, String>();
 		items_1.put("TITLE", getString(R.string.title_section1));
-		items_1.put("ICON", String.valueOf(R.drawable.ic_launcher));
+		items_1.put("ICON", String.valueOf(R.drawable.ic_action_data_usage));
 		
 		HashMap<String, String> items_2 = new HashMap<String, String>();
 		items_2.put("TITLE", getString(R.string.title_section2));
-		items_2.put("ICON", String.valueOf(R.drawable.ic_launcher));
+		items_2.put("ICON", String.valueOf(R.drawable.ic_action_add_to_queue));
 		
 		HashMap<String, String> items_3 = new HashMap<String, String>();
 		items_3.put("TITLE", getString(R.string.title_section3));
-		items_3.put("ICON", String.valueOf(R.drawable.ic_launcher));
+		items_3.put("ICON", String.valueOf(R.drawable.ic_action_web_site));
 		
 		
 
@@ -123,11 +118,19 @@ public class NavigationDrawerFragment extends Fragment {
 		itemList.add(items_2);
 		itemList.add(items_3);
 
-
+		mDrawerListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				selectItem(position);
+				
+			}
+		});
+		
+		
 		NavListAdapter nav = new NavListAdapter(getActivity(), itemList, getActivity().getApplicationContext());
-
 		mDrawerListView.setAdapter(nav);
 		mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+		
 		return mDrawerListView;
 	}
 
@@ -257,7 +260,7 @@ public class NavigationDrawerFragment extends Fragment {
 		// showGlobalContextActionBar, which controls the top-left area of the action bar.
 		if (mDrawerLayout != null && isDrawerOpen()) {
 			//inflater.inflate(R.menu.global, menu);
-			//showGlobalContextActionBar();
+			showGlobalContextActionBar();
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}

@@ -60,7 +60,7 @@ public class ListProgressFragment  extends Fragment {
 
 	
 	@SuppressLint("NewApi")
-	public void showListAnimated(View toShowControl, final View toHideControl) {
+	protected void showListAnimated(View toShowControl, final View toHideControl) {
 
 		toShowControl.setAlpha(0f);
 		toShowControl.setVisibility(View.VISIBLE);

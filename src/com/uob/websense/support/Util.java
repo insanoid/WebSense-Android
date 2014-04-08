@@ -119,10 +119,13 @@ public class Util {
 	    try {
 	    	
 	    	TextView title = (TextView)v.findViewById(R.id.title);
-	    	((TextView)title).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_BOLD));
+	    	if(title!=null)
+	    		((TextView)title).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_BOLD));
 	    	
 	    	TextView sub_title = (TextView)v.findViewById(R.id.sub_title);
-	    	((TextView)sub_title).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_REGLUAR));
+	    	
+	    	if(sub_title!=null)
+	    		((TextView)sub_title).setTypeface( Typeface.createFromAsset(context.getAssets(), Constants.FONT_REGLUAR));
 	    	
 	    	TextView accTxt = (TextView)v.findViewById(R.id.acc_txt);
 	    	

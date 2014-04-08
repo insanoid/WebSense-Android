@@ -74,7 +74,7 @@ public class AppListAdapter  extends BaseAdapter {
 		app = data.get(position);
 
 		title.setText(app.getApplicationName());
-		Log.d("--->",app.getCurrentAcitivtyRunningTime()+"");
+		//Log.d("--->",app.getCurrentAcitivtyRunningTime()+"");
 		sub_title.setText(Util.calculateTime(app.getCurrentAcitivtyRunningTime()/1000));
 		final CharSequence relativeTimeSpan = DateUtils.getRelativeTimeSpanString(app.getEndTime());
 		acc_txt.setText(relativeTimeSpan);

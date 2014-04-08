@@ -3,16 +3,13 @@ package com.uob.websense.adapter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,7 +24,7 @@ public class NavListAdapter  extends BaseAdapter {
 	private static LayoutInflater inflater=null;
 	Context ctx;
 	double totalRunningTime;
-
+	OnItemClickListener mOnItemClickListener;
 
 	public NavListAdapter(Activity a, ArrayList<HashMap<String, String>> d,Context _ctx) {
 		activity = a;
@@ -74,33 +71,8 @@ public class NavListAdapter  extends BaseAdapter {
 		}
 
 
-		vi.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-
-		vi.setOnTouchListener(new OnTouchListener() {
-			
-			@SuppressLint("NewApi")
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					v.setBackgroundColor(ctx.getResources().getColor(R.color.brand_green));
-					title.setTextColor(ctx.getResources().getColor(R.color.white));
-				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-					title.setTextColor(ctx.getResources().getColor(R.color.darker_gray));
-					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
-				}
-				return true;
-			}
-		});
-
 		return vi;
 	}
-
+	
 
 }
