@@ -13,7 +13,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.uob.websense.R;
+import com.uob.websense.adapter.SpinnerAdapter;
 import com.uob.websense.support.Util;
 import com.uob.websense.web_service_manager.WebSenseRestClient;
 
@@ -41,10 +41,8 @@ public class RegisterActivity extends FragmentActivity {
 		if(checkForLogin()==true){
 			setContentView(R.layout.register_view);
 			userTypeSpinner = (Spinner) findViewById(R.id.user_type);
-			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-					R.array.user_type_array, android.R.layout.simple_spinner_item);
-			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			userTypeSpinner.setAdapter(adapter);
+			SpinnerAdapter spinerAdapter = new SpinnerAdapter(this,getResources().getStringArray(R.array.user_type_array));
+			userTypeSpinner.setAdapter(spinerAdapter);
 			Util.overrideFonts(this, findViewById(android.R.id.content));
 			
 		}else{
