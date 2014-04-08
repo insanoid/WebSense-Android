@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.uob.websense.ui.MainActivity"
+            android:name="com.uob.websense.ui.MainContainerActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
         </activity>

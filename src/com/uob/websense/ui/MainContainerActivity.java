@@ -13,7 +13,7 @@ import com.uob.websense.adapter.SpinnerAdapter;
 import com.uob.websense.ui_components.NavigationDrawerFragment;
 
 
-public class MainActivity 
+public class MainContainerActivity 
 extends ActionBarActivity implements
 ActionBar.OnNavigationListener,
 NavigationDrawerFragment.NavigationDrawerCallbacks {

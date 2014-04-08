@@ -108,7 +108,7 @@ public class RegisterActivity extends FragmentActivity {
 	}
 
 	public void navigateToMain() {
-		Intent i  = new Intent(this,MainActivity.class);
+		Intent i  = new Intent(this,MainContainerActivity.class);
 		startActivity(i);
 		finish();
 	}

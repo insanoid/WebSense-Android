@@ -5,4 +5,4 @@
     android:background="@color/white"
     android:choiceMode="singleChoice"
     android:dividerHeight="0.5dp"
-    tools:context="com.uob.websense.ui.MainActivity" />
+    tools:context="com.uob.websense.ui.MainContainerActivity" />
