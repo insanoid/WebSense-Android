@@ -1,6 +1,4 @@
-package com.uob.websense;
-
-import com.uob.websense.support.Constants;
+package com.uob.websense.ui_components;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -14,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+
+import com.uob.websense.R;
+import com.uob.websense.support.Constants;
 
 public class ListProgressFragment  extends Fragment {
 

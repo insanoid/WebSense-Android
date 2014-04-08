@@ -1,4 +1,4 @@
-package com.uob.websense;
+package com.uob.websense.ui;
 
 
 import android.app.Activity;
@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.uob.websense.R;
 import com.uob.websense.adapter.AppListAdapter;
 import com.uob.websense.data_storage.SensorDataWriter;
+import com.uob.websense.ui_components.ListProgressFragment;
 
 public class AppUsageFragment extends ListProgressFragment {
 

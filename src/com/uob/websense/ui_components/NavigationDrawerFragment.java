@@ -1,4 +1,4 @@
-package com.uob.websense;
+package com.uob.websense.ui_components;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.uob.websense.R;
 import com.uob.websense.adapter.NavListAdapter;
 import com.uob.websense.support.Constants;
 
@@ -290,6 +291,7 @@ public class NavigationDrawerFragment extends Fragment {
 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 		actionBar.setTitle(R.string.app_name);
+		@SuppressWarnings("static-access")
 		LayoutInflater inflator = (LayoutInflater)getActionBar().getThemedContext().getSystemService(getActionBar().getThemedContext().LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.title_view, null);
 		TextView titleView = (TextView)v.findViewById(R.id.title);

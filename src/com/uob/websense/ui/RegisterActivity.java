@@ -1,4 +1,4 @@
-package com.uob.websense;
+package com.uob.websense.ui;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.uob.websense.R;
 import com.uob.websense.support.Util;
 import com.uob.websense.web_service_manager.WebSenseRestClient;
 

@@ -1,4 +1,4 @@
-package com.uob.websense;
+package com.uob.websense.ui;
 
 import java.util.ArrayList;
 
@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.uob.websense.R;
 import com.uob.websense.adapter.AppTrendsListAdapter;
 import com.uob.websense.data_models.AppUsageInformationModel;
 import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
+import com.uob.websense.ui_components.ListProgressFragment;
 import com.uob.websense.web_service_manager.WebSenseRestClient;
 
 public class AppTrendsFragment extends ListProgressFragment {
