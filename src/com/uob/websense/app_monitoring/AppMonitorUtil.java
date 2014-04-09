@@ -28,11 +28,14 @@ public class AppMonitorUtil {
 	 */
 	String[] browserPackagenames = {
 			"com.android.chrome",
+			"me.android.browser"
+	};
+	/*
+	 * 
 			"org.mozilla.firefox",
 			"com.opera.mini.android",
 			"mobi.mgeek.TunnyBrowser",
-			"me.android.browser"
-	};
+	 * */
 
 	/**
 	 * Call checker

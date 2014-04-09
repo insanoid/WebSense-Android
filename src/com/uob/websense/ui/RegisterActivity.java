@@ -4,16 +4,22 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -35,17 +41,34 @@ import com.uob.websense.web_service_manager.WebSenseRestClient;
 
 public class RegisterActivity extends FragmentActivity {
 
-	Spinner userTypeSpinner;
-
+	private Spinner userTypeSpinner;
+	private Boolean isRegisterView;
+	private Button registerBtn = null;
+	private Button loginBtn= null;
+	private Button loginBtnDmy= null;
+	private Button registerBtnDmy = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(Util.checkForLogin(getApplicationContext())==false){
+		isRegisterView = true;
+		if(Util.checkForLogin(getApplicationContext())==true){
 			setContentView(R.layout.register_view);
 			userTypeSpinner = (Spinner) findViewById(R.id.user_type);
 			SpinnerAdapter spinerAdapter = new SpinnerAdapter(this,getResources().getStringArray(R.array.user_type_array));
 			userTypeSpinner.setAdapter(spinerAdapter);
 			Util.overrideFonts(this, findViewById(android.R.id.content));
+
+			registerBtn = (Button)findViewById(R.id.register_action_button);
+			loginBtn = (Button)findViewById(R.id.login_action_button);
+			registerBtnDmy = (Button)findViewById(R.id.register_action_button_dummy);
+			loginBtnDmy = (Button)findViewById(R.id.login_action_button_dummy);
+			
+			
+			(loginBtn).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
+			(loginBtnDmy).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
+			(registerBtn).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
+			(registerBtnDmy).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
+			
 			
 		}else{
 			navigateToMain();
@@ -53,30 +76,45 @@ public class RegisterActivity extends FragmentActivity {
 	}
 
 	public void onBtnClicked(View v){
-		if(v.getId() == R.id.login_button){
+		Util.hideSoftKeyboard(this);
+		if(v.getId() == R.id.login_action_button){
 
-			Util.hideSoftKeyboard(this);
+			if(validateLoginInputs()==true){
+				postLoginInformation();
+			}
 
+		}else if((v.getId() == R.id.login_action_button_dummy) || (v.getId() == R.id.register_action_button_dummy)){
+			switchRegistratonOn();
+		}else if((v.getId() == R.id.register_action_button)){
 			if(validateViewInputs()==true){
 				postInformation();
-			}else{
-
 			}
 		}
 	}
 
+
+	public boolean validateLoginInputs(){
+		TextView emailTxt = (TextView)findViewById(R.id.email_address);
+		TextView passwordTxt = (TextView)findViewById(R.id.password);
+
+		if(passwordTxt.getText().toString().trim().length()>0 &&
+				Util.isValidEmail(emailTxt.getText())){
+			return true;
+		}else{
+			showAlert(getString(R.string.login_error));
+			return false;
+		}
+	}
+
 	public boolean validateViewInputs() {
+
+
 
 		TextView emailTxt = (TextView)findViewById(R.id.email_address);
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
 		RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioSex);
 		CheckBox acceptCheckBox = (CheckBox)findViewById(R.id.accept_policy_checkbox);
 
-		Util.logi(passwordTxt.getText().toString().trim().length() +" "+
-				Util.isValidEmail(emailTxt.getText())+" "+
-				radioGroup.getCheckedRadioButtonId()+" "+
-				userTypeSpinner.getSelectedItemPosition());
-		
 		if(passwordTxt.getText().toString().trim().length()>0 &&
 				Util.isValidEmail(emailTxt.getText()) &&
 				radioGroup.getCheckedRadioButtonId()>0 &&
@@ -127,14 +165,14 @@ public class RegisterActivity extends FragmentActivity {
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
 		RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioSex);
 		String genderTxt = ((RadioButton)findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
-		Util.logd("->"+genderTxt);
+
 		RequestParams params = new RequestParams();
 		params.put("username", emailTxt.getText().toString());
 		params.put("password", passwordTxt.getText().toString());
 		params.put("gender", String.valueOf(genderTxt.equalsIgnoreCase(getString(R.string.male))?1:2));
 		params.put("job_type",  String.valueOf(userTypeSpinner.getSelectedItemPosition()));
 		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
-		
+
 		WebSenseRestClient.post(Constants.REGISTERATION_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
@@ -171,12 +209,156 @@ public class RegisterActivity extends FragmentActivity {
 		});
 
 	}
-	
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
-	    super.onConfigurationChanged(newConfig);
+
+	public void postLoginInformation() {
+
+		final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading...");
+		TextView emailTxt = (TextView)findViewById(R.id.email_address);
+		TextView passwordTxt = (TextView)findViewById(R.id.password);
+
+		RequestParams params = new RequestParams();
+		params.put("username", emailTxt.getText().toString());
+		params.put("password", passwordTxt.getText().toString());
+		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
+
+		WebSenseRestClient.post(Constants.AUTHENTICATE_METHOD, params, new JsonHttpResponseHandler() {
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+				Object response;
+				try {
+					response = Util.parseResponse(responseString);
+
+					if (response instanceof JSONObject) {
+						String auth_key = ((JSONObject) response).getString("auth_token");
+						Util.saveSecurePreference(getApplicationContext(), auth_key, "auth_token");
+						navigateToMain();
+
+					}else{
+						showAlert(getApplicationContext().getString(R.string.server_error));
+					}
+
+				} catch (JSONException e) {
+					showAlert(getApplicationContext().getString(R.string.server_error));
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				progressDialog.dismiss();
+
+			}
+
+
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+				progressDialog.dismiss();
+				showAlert(getApplicationContext().getString(R.string.server_error));
+			}
+
+
+		});
+
 	}
 
 
-	
+	@SuppressLint("NewApi")
+	public void switchRegistratonOn(){
+
+		
+
+		if(isRegisterView==false){
+			
+
+			
+			LinearLayout l1 = (LinearLayout)findViewById(R.id.registrationContent);
+			
+
+			l1.setAlpha(0f);
+			l1.setVisibility(View.VISIBLE);
+			l1.animate()
+			.alpha(1f)
+			.setDuration(1000)
+			.setListener(new AnimatorListener() {
+				
+				@Override
+				public void onAnimationStart(Animator animation) {
+					registerBtnDmy.setVisibility(View.GONE);
+					loginBtnDmy.setVisibility(View.VISIBLE);
+					loginBtn.setVisibility(View.GONE);
+					registerBtn.setVisibility(View.VISIBLE);
+					
+				}
+				
+				@Override
+				public void onAnimationRepeat(Animator animation) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					
+					
+				}
+				
+				@Override
+				public void onAnimationCancel(Animator animation) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			isRegisterView = true;
+			LinearLayout l2 = (LinearLayout)findViewById(R.id.top_diff_layout);
+			l2.getLayoutParams().height = 1;
+
+			
+		}else{
+			
+			
+			
+			LinearLayout l1 = (LinearLayout)findViewById(R.id.registrationContent);
+			l1.setVisibility(View.VISIBLE);
+			l1.setAlpha(1f);
+			l1.setVisibility(View.GONE);
+			l1.animate()
+			.alpha(0f)
+			.setDuration(1000)
+			.setListener(null);
+			
+			
+			loginBtn.setAlpha(0f);
+			registerBtn.setVisibility(View.GONE);
+			loginBtnDmy.setVisibility(View.GONE);
+			
+			
+			loginBtn.setVisibility(View.VISIBLE);
+			loginBtn.animate()
+			.alpha(1f)
+			.setDuration(1500);
+			
+			registerBtnDmy.setAlpha(0f);
+			registerBtnDmy.setVisibility(View.VISIBLE);
+			registerBtnDmy.animate()
+			.alpha(1f)
+			.setDuration(1100);
+			
+			isRegisterView = false;
+			LinearLayout l2 = (LinearLayout)findViewById(R.id.top_diff_layout);
+			l2.getLayoutParams().height = 250;
+
+			
+
+		}
+
+		
+
+	} 
+
+
+
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+	}
+
+
+
 }

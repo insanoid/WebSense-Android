@@ -13,6 +13,7 @@
     <string name="sub_section_title3">This Month</string>
     
     
+    <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="login_error">Please fill in all the values before you register.</string>
     <string name="policy_error">Please accept the policy before you continue.</string>
