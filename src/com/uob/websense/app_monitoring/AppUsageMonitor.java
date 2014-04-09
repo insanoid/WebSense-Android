@@ -28,6 +28,7 @@ import android.util.Log;
 import com.uob.websense.data_models.AppUsageInformationModel;
 import com.uob.websense.data_storage.SensorDataWriter;
 import com.uob.websense.support.Constants;
+import com.uob.websense.support.Util;
 
 
 public class AppUsageMonitor extends IntentService {
@@ -189,7 +190,7 @@ public class AppUsageMonitor extends IntentService {
 
 
 	public void pushCurrentItem() {
-		exportDB();
+		//exportDB();
 		if(currentTask!=null){
 		long seconds = System.currentTimeMillis();
 		currentTask.setEndTime(seconds);
@@ -201,6 +202,7 @@ public class AppUsageMonitor extends IntentService {
 		currentTask = null;
 		}
 		
+		Util.updateSyncRecordCount(getApplicationContext());
 	}
 
 	 @SuppressWarnings("resource")

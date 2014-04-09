@@ -99,7 +99,15 @@ public class AppTrendsFragment extends ListProgressFragment {
 					e.printStackTrace();
 				}
 				showListAnimated(applist, loadingSpinner);
-				reloadAdapter();
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						reloadAdapter();
+						
+					}
+				});
+				
 			}
 
 
@@ -110,7 +118,15 @@ public class AppTrendsFragment extends ListProgressFragment {
 					}catch(Exception e){
 						
 					}
-				reloadAdapter();
+				showListAnimated(applist, loadingSpinner);
+				getActivity().runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						reloadAdapter();
+						
+					}
+				});
 			}
 
 

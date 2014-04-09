@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.uob.websense.R;
+import com.uob.websense.data_storage.SensorDataWriter;
 
 public class Util {
 
@@ -222,6 +223,15 @@ public class Util {
 		builder.setCancelable(true);
 		AlertDialog alert = builder.create();
 		alert.show();
+	}
+	
+	public static void updateSyncRecordCount(Context ctx){
+
+		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(ctx);
+		int recordCount = appDataProvider.getUnsyncedRecordCount();
+		appDataProvider.close();
+		Util.logi("Unsycned Records For Apps Updated: " + recordCount);
+		Util.saveSecurePreference(ctx, String.valueOf(recordCount), Constants.APP_INFO_TABLE);
 	}
 
 }

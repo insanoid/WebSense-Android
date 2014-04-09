@@ -34,16 +34,19 @@ public class Constants {
 
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	
-	
 	public static final String BASE_URL = "http://54.186.15.10:3001/";
 	
-	public final static String APP_TRENDS_DAILY  = "app/trends";
-	public final static String APP_TRENDS_WEEKLY = "app/trends";
-	public final static String APP_TRENDS_MONTHLY = "app/trends";
+	public final static String APP_TRENDS_DAILY  = "app/trends/daily";
+	public final static String APP_TRENDS_WEEKLY = "app/trends/weekly";
+	public final static String APP_TRENDS_MONTHLY = "app/trends/monthly";
 
-	public final static String WEB_TRENDS_DAILY  = "web/trends";
-	public final static String WEB_TRENDS_WEEKLY = "web/trends";
-	public final static String WEB_TRENDS_MONTHLY = "web/trends";
+	public final static String WEB_TRENDS_DAILY  = "web/trends/daily";
+	public final static String WEB_TRENDS_WEEKLY = "web/trends/weekly";
+	public final static String WEB_TRENDS_MONTHLY = "web/trends/monthly";
+	
+	public final static String APP_USAGE_METHOD = "app/update";
+	public final static String REGISTERATION_METHOD = "user/create";
+	public final static String AUTHENTICATE_METHOD = "user/authenticate";
 	
 	public final static String FONT_BOLD = "ProximaNova-Semibold.otf";
 	public final static String FONT_LIGHT = "ProximaNova-Light.otf";

@@ -23,6 +23,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.uob.websense.R;
 import com.uob.websense.adapter.SpinnerAdapter;
+import com.uob.websense.support.Constants;
+import com.uob.websense.support.DeviceUuidFactory;
 import com.uob.websense.support.Util;
 import com.uob.websense.web_service_manager.WebSenseRestClient;
 
@@ -38,7 +40,7 @@ public class RegisterActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(checkForLogin()==true){
+		if(checkForLogin()==false){
 			setContentView(R.layout.register_view);
 			userTypeSpinner = (Spinner) findViewById(R.id.user_type);
 			SpinnerAdapter spinerAdapter = new SpinnerAdapter(this,getResources().getStringArray(R.array.user_type_array));
@@ -70,10 +72,15 @@ public class RegisterActivity extends FragmentActivity {
 		RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioSex);
 		CheckBox acceptCheckBox = (CheckBox)findViewById(R.id.accept_policy_checkbox);
 
+		Util.logi(passwordTxt.getText().toString().trim().length() +" "+
+				Util.isValidEmail(emailTxt.getText())+" "+
+				radioGroup.getCheckedRadioButtonId()+" "+
+				userTypeSpinner.getSelectedItemPosition());
+		
 		if(passwordTxt.getText().toString().trim().length()>0 &&
 				Util.isValidEmail(emailTxt.getText()) &&
 				radioGroup.getCheckedRadioButtonId()>0 &&
-				userTypeSpinner.getSelectedItem()!=null){
+				userTypeSpinner.getSelectedItemPosition()!=Spinner.INVALID_POSITION){
 
 			if(acceptCheckBox.isChecked()==false){
 				showAlert(getString(R.string.policy_error));
@@ -130,14 +137,15 @@ public class RegisterActivity extends FragmentActivity {
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
 		RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioSex);
 		String genderTxt = ((RadioButton)findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
-
+		Util.logd("->"+genderTxt);
 		RequestParams params = new RequestParams();
 		params.put("username", emailTxt.getText().toString());
 		params.put("password", passwordTxt.getText().toString());
-		params.put("gender", genderTxt.equalsIgnoreCase(getString(R.string.male))?1:2);
-		params.put("user_type", userTypeSpinner.getSelectedItemPosition());
+		params.put("gender", String.valueOf(genderTxt.equalsIgnoreCase(getString(R.string.male))?1:2));
+		params.put("job_type",  String.valueOf(userTypeSpinner.getSelectedItemPosition()));
+		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
 		
-		WebSenseRestClient.post("create", params, new JsonHttpResponseHandler() {
+		WebSenseRestClient.post(Constants.REGISTERATION_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
 
