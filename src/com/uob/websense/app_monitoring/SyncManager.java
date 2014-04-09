@@ -57,7 +57,7 @@ public class SyncManager extends IntentService {
 
 	@Override
 	public void onStart(Intent intent, int startid) {
-		if(ifAppSyncRequired()==true){
+		if(ifAppSyncRequired()==true && Util.checkForLogin(getApplicationContext())){
 			syncRecords();
 		}
 	}

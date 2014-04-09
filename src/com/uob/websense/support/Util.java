@@ -9,9 +9,12 @@ import org.json.JSONTokener;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -26,6 +29,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.uob.websense.R;
+import com.uob.websense.app_monitoring.AppUsageMonitor;
+import com.uob.websense.app_monitoring.SyncManager;
 import com.uob.websense.data_storage.SensorDataWriter;
 
 public class Util {
@@ -234,4 +239,40 @@ public class Util {
 		Util.saveSecurePreference(ctx, String.valueOf(recordCount), Constants.APP_INFO_TABLE);
 	}
 
+	/*
+	 * Checks if the user is already logged in.
+	 */
+	public static boolean checkForLogin(Context ctx){
+	
+		if(Util.getSecurePreference(ctx, "auth_token")!=null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public static void killServices(Context ctx){
+
+		ctx.stopService(new Intent(ctx,AppUsageMonitor.class));
+		ctx.stopService(new Intent(ctx,SyncManager.class));
+		
+		AlarmManager alarmManager = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+
+	    Intent updateServiceIntent = new Intent(ctx, AppUsageMonitor.class);
+	    PendingIntent pendingUpdateIntent = PendingIntent.getService(ctx, 0, updateServiceIntent, 0);
+
+	    
+	    Intent syncServiceIntent = new Intent(ctx, SyncManager.class);
+	    PendingIntent pendingSyncIntent = PendingIntent.getService(ctx, 0, syncServiceIntent, 0);
+
+	    
+	    // Cancel alarms
+	    try {
+	        alarmManager.cancel(pendingUpdateIntent);
+	        alarmManager.cancel(pendingSyncIntent);
+	    } catch (Exception e) {
+	        Util.loge("Alarms were not canncelled!");
+	    }
+		
+	}
 }

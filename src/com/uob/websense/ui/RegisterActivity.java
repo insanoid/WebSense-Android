@@ -40,7 +40,7 @@ public class RegisterActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(checkForLogin()==false){
+		if(Util.checkForLogin(getApplicationContext())==false){
 			setContentView(R.layout.register_view);
 			userTypeSpinner = (Spinner) findViewById(R.id.user_type);
 			SpinnerAdapter spinerAdapter = new SpinnerAdapter(this,getResources().getStringArray(R.array.user_type_array));
@@ -118,17 +118,7 @@ public class RegisterActivity extends FragmentActivity {
 		finish();
 	}
 
-	/*
-	 * Checks if the user is already logged in.
-	 */
-	public boolean checkForLogin(){
-	//	return false;	
-		if(Util.getSecurePreference(getApplicationContext(), "auth_token")!=null){
-			return true;
-		}else{
-			return false;
-		}
-	}
+
 
 	public void postInformation() {
 

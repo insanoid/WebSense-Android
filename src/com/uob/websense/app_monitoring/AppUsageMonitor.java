@@ -133,8 +133,12 @@ public class AppUsageMonitor extends IntentService {
 
 		getApplicationContext().registerReceiver(mPowerKeyReceiver, theFilter);
 		timer = new Timer(Constants.LOG_TAG);
-		timer.schedule(updateTask, 1000L, Constants.TASK_POLLER_TIMER);
-
+		
+		if(Util.checkForLogin(getApplicationContext())){
+			timer.schedule(updateTask, 1000L, Constants.TASK_POLLER_TIMER);
+		}else{
+			Util.killServices(getApplicationContext());
+		}
 	}
 
 
