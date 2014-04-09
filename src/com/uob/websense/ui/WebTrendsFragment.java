@@ -128,7 +128,6 @@ public class WebTrendsFragment extends ListProgressFragment {
 				@Override
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					Uri uri = Uri.parse(webList.get(position).getCompleteURL());
-					//Log.d("---->",uri+"-");
 					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 					startActivity(intent);
 				}

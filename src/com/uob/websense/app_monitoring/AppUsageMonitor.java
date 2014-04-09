@@ -154,13 +154,12 @@ public class AppUsageMonitor extends IntentService {
 				}
 
 				if(currentTask.getApplicationPackageName().equalsIgnoreCase(response.get(Constants.APP_PACKAGE_NAME_TAG))){
-					Log.d("currentTask.getCurrentAcitivtyRunningTime()",currentTask.getCurrentAcitivtyRunningTime()+"");
 					currentTask.setCurrentAcitivtyRunningTime(currentTask.getCurrentAcitivtyRunningTime()+ Constants.TASK_POLLER_TIMER);	
 				}else{
 					pushCurrentItem();
 					initialiseCurrentItem(response);
 				}
-				Log.i("Log App:","<"+currentTask.getApplicationName()+">:["+currentTask.getApplicationPackageName()+"]");
+				//Log.i("Log App:","<"+currentTask.getApplicationName()+">:["+currentTask.getApplicationPackageName()+"]");
 
 				if(appMonitor.isBrowser(currentTask.getApplicationPackageName())){
 					try {
@@ -190,7 +189,7 @@ public class AppUsageMonitor extends IntentService {
 
 
 	public void pushCurrentItem() {
-		
+		exportDB();
 		if(currentTask!=null){
 		long seconds = System.currentTimeMillis();
 		currentTask.setEndTime(seconds);

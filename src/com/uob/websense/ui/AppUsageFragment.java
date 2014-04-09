@@ -1,6 +1,8 @@
 package com.uob.websense.ui;
 
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +13,9 @@ import android.view.ViewGroup;
 
 import com.uob.websense.R;
 import com.uob.websense.adapter.AppListAdapter;
+import com.uob.websense.data_models.AppUsageInformationModel;
 import com.uob.websense.data_storage.SensorDataWriter;
+import com.uob.websense.support.Constants;
 import com.uob.websense.ui_components.ListProgressFragment;
 
 public class AppUsageFragment extends ListProgressFragment {
@@ -61,7 +65,16 @@ public class AppUsageFragment extends ListProgressFragment {
 	private void reloadAdapter(Activity activity) {
 
 		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(activity.getApplicationContext());
-		appListAdapter  = new AppListAdapter(activity,appDataProvider.getAppUsageInformation(), activity.getApplicationContext());
+		ArrayList<AppUsageInformationModel> appInfo = null;
+		if(navigationTabIndex == 0){
+			appInfo = appDataProvider.getAppUsageInformationForToday();
+		}else if(navigationTabIndex == 1){
+			appInfo = appDataProvider.getAppUsageInformationForNDays(Constants.DAY_WEEK);
+		}else if(navigationTabIndex == 2){
+			appInfo = appDataProvider.getAppUsageInformationForNDays(Constants.DAY_MONTH);
+		}
+		
+		appListAdapter  = new AppListAdapter(activity,appInfo, activity.getApplicationContext());
 		appDataProvider.close();
 
 		activity.runOnUiThread(new Runnable() {

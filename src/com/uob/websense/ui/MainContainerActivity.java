@@ -61,6 +61,11 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		Intent i = new Intent();  
 		i.setClass(this, com.uob.websense.app_monitoring.AppUsageMonitor.class);
 		startService(i);
+		
+		Intent i2 = new Intent();  
+		i2.setClass(this, com.uob.websense.app_monitoring.SyncManager.class);
+		startService(i2);
+		
 
 		setUpNavigationDrawer();
 		setUpActionBarList();

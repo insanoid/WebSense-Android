@@ -10,9 +10,8 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import com.uob.websense.support.Constants;
+import com.uob.websense.support.Util;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -48,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			try 
 			{
 				copyDataBase();
-				Log.d(Constants.LOG_TAG, "createDatabase database created");
+				Util.logi("Database Created.["+dbname+"]");
 			} 
 			catch (IOException mIOException) 
 			{
