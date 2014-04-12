@@ -9,19 +9,34 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:orientation="vertical" >
-<!-- android:background="@color/brand_green" -->
+
+        <!-- android:background="@color/brand_green" -->
+
+      
         <LinearLayout
             android:id="@+id/top_diff_layout"
             android:layout_width="match_parent"
             android:layout_height="1dip"
-            android:layout_marginBottom="25dip"
-            android:orientation="vertical" />
+            android:layout_marginBottom="10dip"
+            android:background="@color/brand_green"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center" >
+            
+              <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_brand_logo" />
+            
+              
+        </LinearLayout>
 
         <EditText
             android:id="@+id/email_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="40dp"
             android:ems="10"
             android:hint="@string/emailaddress"
             android:inputType="textEmailAddress"
@@ -98,11 +113,10 @@
             android:id="@+id/login_action_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="0dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="0dp"
-            android:background="@drawable/apptheme_btn_secondary_holo_light"
+            android:layout_marginTop="10dp"
             android:onClick="onBtnClicked"
             android:text="@string/login"
             android:textColor="@color/white"
@@ -133,6 +147,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:onClick="onBtnClicked"
+                
+            android:background="@drawable/apptheme_btn_secondary_holo_light"
                 android:text="Looking for a new accout?"
                 android:textColor="@color/white"
                 android:visibility="gone" />

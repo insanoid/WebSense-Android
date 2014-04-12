@@ -32,8 +32,10 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 		data = d;
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		ctx = _ctx;
-		imageLoader.init(ImageLoaderConfiguration.createDefault(_ctx));
 
+		if(imageLoader.isInited()==false){
+		imageLoader.init(ImageLoaderConfiguration.createDefault(_ctx));
+		}
 	}
 
 	

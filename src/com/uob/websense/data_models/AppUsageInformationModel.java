@@ -6,6 +6,8 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.uob.websense.support.Util;
+
 import android.content.ContentValues;
 
 public class AppUsageInformationModel implements Serializable {
@@ -32,10 +34,13 @@ public class AppUsageInformationModel implements Serializable {
 			setApplicationIconURL(j.has("app_icon")?j.getString("app_icon"):"");
 			
 		} catch (JSONException e) {
+			Util.logv("---------->>>>>>>>>>>>>ISSUE<<<--");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+
+	
 	public AppUsageInformationModel() {
 		// TODO Auto-generated constructor stub
 	}

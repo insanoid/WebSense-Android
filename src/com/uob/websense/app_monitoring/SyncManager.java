@@ -136,7 +136,8 @@ public class SyncManager extends IntentService {
 			JSONObject finalRecord = new JSONObject();
 
 			try {
-				finalRecord.put("auth_token", (Util.getSecurePreference(getApplicationContext(), "auth_token")));
+				finalRecord.put("auth_token", (Util.getSecurePreference(getApplicationContext(),Constants.AUTH_KEY_TOKEN)));
+				Util.loge("---+++++->"+Util.getSecurePreference(getApplicationContext(), Constants.AUTH_KEY_TOKEN));
 				finalRecord.put("app_info", records);
 			} catch (JSONException e) {
 				

@@ -51,7 +51,9 @@ public class RegisterActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		isRegisterView = true;
-		if(Util.checkForLogin(getApplicationContext())==true){
+		if(Util.checkForLogin(getApplicationContext())==false){
+			
+			Util.removeSecurePreference(this, Constants.AUTH_KEY_TOKEN);
 			setContentView(R.layout.register_view);
 			userTypeSpinner = (Spinner) findViewById(R.id.user_type);
 			SpinnerAdapter spinerAdapter = new SpinnerAdapter(this,getResources().getStringArray(R.array.user_type_array));
@@ -156,8 +158,6 @@ public class RegisterActivity extends FragmentActivity {
 		finish();
 	}
 
-
-
 	public void postInformation() {
 
 		final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading...");
@@ -176,33 +176,19 @@ public class RegisterActivity extends FragmentActivity {
 		WebSenseRestClient.post(Constants.REGISTERATION_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
-
-				Object response;
-				try {
-					response = Util.parseResponse(responseString);
-
-					if (response instanceof JSONObject) {
-						String auth_key = ((JSONObject) response).getString("auth_token");
-						Util.saveSecurePreference(getApplicationContext(), auth_key, "auth_token");
-						navigateToMain();
-
-					}else{
-						showAlert(getApplicationContext().getString(R.string.server_error));
-					}
-
-				} catch (JSONException e) {
-					showAlert(getApplicationContext().getString(R.string.server_error));
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				progressDialog.dismiss();
-
+				handleResponse(responseString);
+				progressDialog.dismiss();	
 			}
-
-
 			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 				progressDialog.dismiss();
-				showAlert(getApplicationContext().getString(R.string.server_error));
+				if(statusCode==400){
+					showAlert("Invalid request.");
+					
+				}else if(statusCode == 401){
+					showAlert("Email and password already exists.");
+				}else{
+					showAlert(getApplicationContext().getString(R.string.server_error));
+				}
 			}
 
 
@@ -224,33 +210,21 @@ public class RegisterActivity extends FragmentActivity {
 		WebSenseRestClient.post(Constants.AUTHENTICATE_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
-
-				Object response;
-				try {
-					response = Util.parseResponse(responseString);
-
-					if (response instanceof JSONObject) {
-						String auth_key = ((JSONObject) response).getString("auth_token");
-						Util.saveSecurePreference(getApplicationContext(), auth_key, "auth_token");
-						navigateToMain();
-
-					}else{
-						showAlert(getApplicationContext().getString(R.string.server_error));
-					}
-
-				} catch (JSONException e) {
-					showAlert(getApplicationContext().getString(R.string.server_error));
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				progressDialog.dismiss();
-
+				handleResponse(responseString);
+				progressDialog.dismiss();	
 			}
-
 
 			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 				progressDialog.dismiss();
-				showAlert(getApplicationContext().getString(R.string.server_error));
+				if(statusCode==400){
+					showAlert("Invalid request.");
+					
+				}else if(statusCode == 401){
+					showAlert("Invalid username and password.");
+				}else{
+					showAlert(getApplicationContext().getString(R.string.server_error));
+				}
+				
 			}
 
 
@@ -258,19 +232,40 @@ public class RegisterActivity extends FragmentActivity {
 
 	}
 
+void handleResponse(String responseString){
+	
+	Object response;
+	try {
+		Util.logi("Real Response:" + responseString);
+		response = Util.parseResponse(responseString);
+
+		if (response instanceof JSONObject) {
+			if(((JSONObject) response).has("auth_token")==true){
+			String auth_key = ((JSONObject) response).getString("auth_token");
+			Util.saveSecurePreference(getApplicationContext(), auth_key, Constants.AUTH_KEY_TOKEN);
+			navigateToMain();
+			}else{
+				 showAlert("Invalid username and password.");
+			}
+		}else{
+			showAlert(getApplicationContext().getString(R.string.server_error));
+		}
+
+	} catch (JSONException e) {
+		showAlert(getApplicationContext().getString(R.string.server_error));
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+
+}
 
 	@SuppressLint("NewApi")
 	public void switchRegistratonOn(){
 
-		
-
 		if(isRegisterView==false){
 			
-
-			
 			LinearLayout l1 = (LinearLayout)findViewById(R.id.registrationContent);
-			
-
 			l1.setAlpha(0f);
 			l1.setVisibility(View.VISIBLE);
 			l1.animate()
@@ -312,53 +307,64 @@ public class RegisterActivity extends FragmentActivity {
 			
 		}else{
 			
-			
-			
 			LinearLayout l1 = (LinearLayout)findViewById(R.id.registrationContent);
 			l1.setVisibility(View.VISIBLE);
 			l1.setAlpha(1f);
 			l1.setVisibility(View.GONE);
 			l1.animate()
 			.alpha(0f)
-			.setDuration(1000)
-			.setListener(null);
-			
-			
-			loginBtn.setAlpha(0f);
-			registerBtn.setVisibility(View.GONE);
-			loginBtnDmy.setVisibility(View.GONE);
-			
-			
-			loginBtn.setVisibility(View.VISIBLE);
-			loginBtn.animate()
-			.alpha(1f)
-			.setDuration(1500);
-			
-			registerBtnDmy.setAlpha(0f);
-			registerBtnDmy.setVisibility(View.VISIBLE);
-			registerBtnDmy.animate()
-			.alpha(1f)
-			.setDuration(1100);
-			
-			isRegisterView = false;
-			LinearLayout l2 = (LinearLayout)findViewById(R.id.top_diff_layout);
-			l2.getLayoutParams().height = 250;
+			.setDuration(800)
+			.setListener(new AnimatorListener() {
+				
+				@Override
+				public void onAnimationStart(Animator animation) {
+					
+					registerBtnDmy.setVisibility(View.VISIBLE);
+					loginBtnDmy.setVisibility(View.GONE);
+					registerBtn.setVisibility(View.GONE);
+					
+					isRegisterView = false;
+					LinearLayout l2 = (LinearLayout)findViewById(R.id.top_diff_layout);
+					l2.getLayoutParams().height = 350;	
+					
+					
+				}
+				
+				@Override
+				public void onAnimationRepeat(Animator animation) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void onAnimationEnd(Animator animation) {
 
+					loginBtn.setVisibility(View.VISIBLE);
+					
+					
+					
+					
+				}
+				
+				@Override
+				public void onAnimationCancel(Animator animation) {
+					// TODO Auto-generated method stub
+					
+				}
+			});
+			
+			
+			
+			
+			
 			
 
 		}
-
-		
-
 	} 
-
-
 
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
 	}
-
-
 
 }

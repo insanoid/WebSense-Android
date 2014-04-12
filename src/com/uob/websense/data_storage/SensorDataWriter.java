@@ -23,7 +23,11 @@ public class SensorDataWriter {
 		}
 
 		public void save(AppUsageInformationModel model) {
-			super.insert(model.getContentValues(),Constants.APP_INFO_TABLE);
+			if(model==null){
+			
+			}else{
+				super.insert(model.getContentValues(),Constants.APP_INFO_TABLE);
+			}
 		}
 
 		public void purgeSyncedRecords(){

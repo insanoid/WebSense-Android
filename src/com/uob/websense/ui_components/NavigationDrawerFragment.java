@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.uob.websense.R;
 import com.uob.websense.adapter.NavListAdapter;
 import com.uob.websense.support.Constants;
+import com.uob.websense.support.Util;
 
 
 public class NavigationDrawerFragment extends Fragment {
@@ -113,11 +114,17 @@ public class NavigationDrawerFragment extends Fragment {
 		items_3.put("ICON", String.valueOf(R.drawable.ic_action_web_site));
 		
 		
+		HashMap<String, String> items_4 = new HashMap<String, String>();
+		items_4.put("TITLE", getString(R.string.title_section4));
+		items_4.put("ICON", String.valueOf(R.drawable.ic_action_back));
+		
+		
 
 		ArrayList<HashMap<String, String>> itemList = new ArrayList<HashMap<String,String>>();
 		itemList.add(items_1);
 		itemList.add(items_2);
 		itemList.add(items_3);
+		itemList.add(items_4);
 
 		mDrawerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -215,6 +222,13 @@ public class NavigationDrawerFragment extends Fragment {
 
 	private void selectItem(int position) {
 		mCurrentSelectedPosition = position;
+		
+		if(position==3){
+			mDrawerLayout.closeDrawer(mFragmentContainerView);
+			Util.restart(getActivity(), 1);
+			return;
+		}
+		
 		if (mDrawerListView != null) {
 			mDrawerListView.setItemChecked(position, true);
 		}

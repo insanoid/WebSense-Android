@@ -44,8 +44,7 @@
         <service
             android:name="com.uob.websense.app_monitoring.AppUsageMonitor"
             android:enabled="true"
-            android:exported="false"
-            android:process=":remote" >
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.uob.websense.app_monitoring.AppUsageMonitor" />
             </intent-filter>
@@ -54,8 +53,7 @@
          <service
             android:name="com.uob.websense.app_monitoring.SyncManager"
             android:enabled="true"
-            android:exported="false"
-            android:process=":remote" >
+            android:exported="false" >
             <intent-filter>
                 <action android:name="com.uob.websense.app_monitoring.SyncManager" />
             </intent-filter>

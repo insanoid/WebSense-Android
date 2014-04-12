@@ -4,6 +4,8 @@ public class Constants {
 
 	public static Boolean IS_DEBUG = true;
 	
+	public final static String AUTH_KEY_TOKEN = "AUTHKEY";
+	
 	
 	public final static String APP_NAME_TAG = "APP_NAME";
 	public final static String APP_PACKAGE_NAME_TAG = "APP_PACKAGE_NAME";
@@ -18,7 +20,7 @@ public class Constants {
 	public static long DAY_WEEK = 7*(24*60*60*1000L);
 	
 
-	public static int MIN_RECORD_FOR_SYNC = 10;
+	public static int MIN_RECORD_FOR_SYNC = 2;
 	public static int RECORD_THRESHOLD_FOR_FORCED_SYNCED = 100;
 	public static int RECORD_BATCH_COUNT = 10;
 	

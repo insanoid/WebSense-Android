@@ -14,9 +14,8 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.DialogInterface.OnClickListener;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -32,11 +31,9 @@ import com.uob.websense.R;
 import com.uob.websense.app_monitoring.AppUsageMonitor;
 import com.uob.websense.app_monitoring.SyncManager;
 import com.uob.websense.data_storage.SensorDataWriter;
+import com.uob.websense.support.SecurePreferences.Editor;
 
 public class Util {
-
-	private static final String MY_PREFS_FILE_NAME = "SEC_PREF";
-
 	
 	public final static void logi(String text) {
 		if(Constants.IS_DEBUG==true){
@@ -100,20 +97,35 @@ public class Util {
 		return result;
 	}
 
+	public static void removeSecurePreference(Context ctx,String key){
+		
+		SecurePreferences mSecurePrefs;
+		mSecurePrefs = new SecurePreferences(ctx);
+		final Editor secureEditor = mSecurePrefs.edit();
+		secureEditor.remove(key);
+		secureEditor.commit();
+	}
+	
 	public static void saveSecurePreference(Context ctx,String value, String key){
-		final SharedPreferences prefs = new ObscuredSharedPreferences( 
-				ctx, 
-				ctx.getSharedPreferences(MY_PREFS_FILE_NAME, Context.MODE_PRIVATE)
-				);    
-		prefs.edit().putString(key,value).commit();
+		
+		SecurePreferences mSecurePrefs;
+		mSecurePrefs = new SecurePreferences(ctx);
+		final Editor secureEditor = mSecurePrefs.edit();
+		secureEditor.remove(key);
+		secureEditor.commit();
+		secureEditor.putString(key, value);
+		secureEditor.commit();
+
 	}
 
 	public static String getSecurePreference(Context ctx, String key){
-		final SharedPreferences prefs = new ObscuredSharedPreferences( 
-				ctx, 
-				ctx.getSharedPreferences(MY_PREFS_FILE_NAME, Context.MODE_PRIVATE)
-				);    
-		return prefs.getString(key, null);
+		SecurePreferences mSecurePrefs;
+		mSecurePrefs = new SecurePreferences(ctx);
+		String val = mSecurePrefs.getString(key,null);
+		return val;
+		
+
+	      
 	}
 
 	@SuppressLint("NewApi")
@@ -243,8 +255,13 @@ public class Util {
 	 * Checks if the user is already logged in.
 	 */
 	public static boolean checkForLogin(Context ctx){
-	
-		if(Util.getSecurePreference(ctx, "auth_token")!=null){
+		
+		String authKey = Util.getSecurePreference(ctx, Constants.AUTH_KEY_TOKEN);
+		logd("AUTH KEY: ---->"+authKey);
+		if(authKey==null){
+			return false;
+		}
+		if(authKey.length()>0){
 			return true;
 		}else{
 			return false;
@@ -275,4 +292,21 @@ public class Util {
 	    }
 		
 	}
+	
+	
+	public static void restart(Context context, int delay) {
+	    if (delay == 0) {
+	        delay = 1;
+	    }
+	    removeSecurePreference(context, Constants.AUTH_KEY_TOKEN);
+	    Intent restartIntent = context.getPackageManager()
+	            .getLaunchIntentForPackage(context.getPackageName());
+	    PendingIntent intent = PendingIntent.getActivity(
+	            context, 0,
+	            restartIntent, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+	    AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+	    manager.set(AlarmManager.RTC, System.currentTimeMillis() + delay, intent);
+	    System.exit(2);
+	}
+	
 }
