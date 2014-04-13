@@ -75,12 +75,6 @@ public class AppUsageMonitor extends IntentService {
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		super.onStartCommand(intent, flags, startId);
 		setAlarmToRedoLoad();
-
-		mLocationChangeReciever = new LocationChangeReciever();
-		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIY);
-		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
-		registerReceiver(mLocationChangeReciever, filterProx);
-
 		return Service.START_STICKY;
 	}
 
@@ -140,6 +134,13 @@ public class AppUsageMonitor extends IntentService {
 				}
 			}
 		};
+		
+
+		mLocationChangeReciever = new LocationChangeReciever();
+		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIY);
+		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
+		registerReceiver(mLocationChangeReciever, filterProx);
+		
 
 		getApplicationContext().registerReceiver(mPowerKeyReceiver, theFilter);
 		timer = new Timer(Constants.LOG_TAG);

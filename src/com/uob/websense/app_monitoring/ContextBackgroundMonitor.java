@@ -61,13 +61,13 @@ public class ContextBackgroundMonitor extends IntentService {
 		super.onCreate();
 		
 		Log.i(Constants.LOG_TAG, "background Created Service.");
-		
+		initateMonitoring();
 	}
 
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		super.onStartCommand(intent, flags, startId);
-		initateMonitoring();
+		
 		return Service.START_STICKY;
 	}
 	
