@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
@@ -39,6 +40,9 @@ public class AppUsageMonitor extends IntentService {
 	private static long screenClosedTime = 0L;
 	private BroadcastReceiver mPowerKeyReceiver = null;
 	private Timer timer = null;
+	private Location knownLocation;
+
+	LocationChangeReciever mLocationChangeReciever;
 
 	public AppUsageMonitor(String name) {
 		super(name);
@@ -71,6 +75,12 @@ public class AppUsageMonitor extends IntentService {
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		super.onStartCommand(intent, flags, startId);
 		setAlarmToRedoLoad();
+
+		mLocationChangeReciever = new LocationChangeReciever();
+		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIY);
+		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
+		registerReceiver(mLocationChangeReciever, filterProx);
+
 		return Service.START_STICKY;
 	}
 
@@ -133,14 +143,13 @@ public class AppUsageMonitor extends IntentService {
 
 		getApplicationContext().registerReceiver(mPowerKeyReceiver, theFilter);
 		timer = new Timer(Constants.LOG_TAG);
-		
+
 		if(Util.checkForLogin(getApplicationContext())){
 			timer.schedule(updateTask, 1000L, Constants.TASK_POLLER_TIMER);
 		}else{
 			Util.killServices(getApplicationContext());
 		}
 	}
-
 
 	private TimerTask updateTask = new TimerTask() {
 		@Override
@@ -152,8 +161,8 @@ public class AppUsageMonitor extends IntentService {
 			if (isScreenOn) {
 				AppMonitorUtil appMonitor = new AppMonitorUtil();
 				HashMap<String, String>response = appMonitor.getTopPackageName(AppUsageMonitor.this);
-				
-				
+
+
 				if(!(currentTask!=null && currentTask.getApplicationPackageName()!=null)){
 					initialiseCurrentItem(response);
 				}
@@ -192,56 +201,58 @@ public class AppUsageMonitor extends IntentService {
 
 	};
 
-
 	public void pushCurrentItem() {
-		//exportDB();
+		exportDB();
 		if(currentTask!=null){
-		long seconds = System.currentTimeMillis();
-		currentTask.setEndTime(seconds);
-		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
-		appDataProvider.createDatabase();
-		appDataProvider.open();
-		appDataProvider.save(currentTask);
-		appDataProvider.close();
-		currentTask = null;
+			long seconds = System.currentTimeMillis();
+			currentTask.setEndTime(seconds);
+			
+			if(currentTask.getPosition()==null && knownLocation!=null)
+				currentTask.setPosition(knownLocation.getLatitude()+","+knownLocation.getLongitude());
+			
+			SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
+			appDataProvider.createDatabase();
+			appDataProvider.open();
+			appDataProvider.save(currentTask);
+			appDataProvider.close();
+			currentTask = null;
 		}
-		
+
 		Util.updateSyncRecordCount(getApplicationContext());
 	}
 
-	 @SuppressWarnings("resource")
+	@SuppressWarnings("resource")
 	public void exportDB(){
-	    try {
-	        File sd = Environment.getExternalStorageDirectory();
-	        if (sd.canWrite()) {
-	        	
+		try {
+			File sd = Environment.getExternalStorageDirectory();
+			if (sd.canWrite()) {
 
-	            String currentDBPath = "/data/data/com.uob.websense/databases/APP_INFO.sqlite";
-	            String backupDBPath = sd + "/temp/filename.db";
-	            File currentDB = new File(currentDBPath);
-	            File backupDB = new File(backupDBPath);
 
-	            if (currentDB.exists()) {
-	               
+				String currentDBPath = "/data/data/com.uob.websense/databases/APP_INFO.sqlite";
+				String backupDBPath = sd + "/temp/filename.db";
+				File currentDB = new File(currentDBPath);
+				File backupDB = new File(backupDBPath);
+
+				if (currentDB.exists()) {
+
 					FileChannel src = new FileInputStream(currentDB).getChannel();
-	                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-	                dst.transferFrom(src, 0, src.size());
-	                src.close();
-	                dst.close();
-	                }
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
+					FileChannel dst = new FileOutputStream(backupDB).getChannel();
+					dst.transferFrom(src, 0, src.size());
+					src.close();
+					dst.close();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
+
 	public void sendIntentNotification() {
 		//Send Broadcast notifying about new app event.
 		Intent proxIntent = new Intent(Constants.APP_CONTENT_CHANGE);  
 		proxIntent.putExtra(Constants.APP_INFO_KEY,currentTask);
 		sendBroadcast(proxIntent);
 	}
-
 
 	public void updateCurrentItem() {
 		//TODO: update current item with the new context.
@@ -252,7 +263,9 @@ public class AppUsageMonitor extends IntentService {
 		currentTask = new AppUsageInformationModel();
 		currentTask.setCurrentAcitivtyRunningTime(0L);
 		long seconds = System.currentTimeMillis();
-		
+		if(knownLocation!=null)
+			currentTask.setPosition(knownLocation.getLatitude()+","+knownLocation.getLongitude());
+	
 		currentTask.setStartTime(seconds);
 		currentTask.setApplicationName(appInfo.get(Constants.APP_NAME_TAG));
 		currentTask.setApplicationPackageName(appInfo.get(Constants.APP_PACKAGE_NAME_TAG));
@@ -263,4 +276,16 @@ public class AppUsageMonitor extends IntentService {
 
 	}
 
+	// Handler for receiving changes in points.
+	public class LocationChangeReciever extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {;
+
+		Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIY);
+			Util.logd("App Monitor Received Location Update: "+ newLocation);
+			knownLocation = newLocation;
+			pushCurrentItem();
+		}
+	}
 }

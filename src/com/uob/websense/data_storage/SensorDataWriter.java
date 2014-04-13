@@ -24,7 +24,7 @@ public class SensorDataWriter {
 
 		public void save(AppUsageInformationModel model) {
 			if(model==null){
-			
+				
 			}else{
 				super.insert(model.getContentValues(),Constants.APP_INFO_TABLE);
 			}

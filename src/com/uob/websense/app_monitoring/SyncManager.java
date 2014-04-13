@@ -137,7 +137,6 @@ public class SyncManager extends IntentService {
 
 			try {
 				finalRecord.put("auth_token", (Util.getSecurePreference(getApplicationContext(),Constants.AUTH_KEY_TOKEN)));
-				Util.loge("---+++++->"+Util.getSecurePreference(getApplicationContext(), Constants.AUTH_KEY_TOKEN));
 				finalRecord.put("app_info", records);
 			} catch (JSONException e) {
 				

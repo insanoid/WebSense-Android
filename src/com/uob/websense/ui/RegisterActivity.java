@@ -94,7 +94,6 @@ public class RegisterActivity extends FragmentActivity {
 		}
 	}
 
-
 	public boolean validateLoginInputs(){
 		TextView emailTxt = (TextView)findViewById(R.id.email_address);
 		TextView passwordTxt = (TextView)findViewById(R.id.password);

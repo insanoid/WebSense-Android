@@ -10,6 +10,7 @@ import android.view.Menu;
 
 import com.uob.websense.R;
 import com.uob.websense.adapter.SpinnerAdapter;
+import com.uob.websense.app_monitoring.ContextBackgroundMonitor;
 import com.uob.websense.ui_components.NavigationDrawerFragment;
 
 
@@ -61,11 +62,15 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		Intent i = new Intent();  
 		i.setClass(this, com.uob.websense.app_monitoring.AppUsageMonitor.class);
 		startService(i);
-		
+
 		Intent i2 = new Intent();  
 		i2.setClass(this, com.uob.websense.app_monitoring.SyncManager.class);
 		startService(i2);
-		
+
+
+		Intent serviceIntent = new Intent();  
+		serviceIntent.setClass(this, ContextBackgroundMonitor.class);
+		startService(serviceIntent);
 
 		setUpNavigationDrawer();
 		setUpActionBarList();
@@ -126,22 +131,26 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 
 	@Override
 	public boolean onNavigationItemSelected(int position, long id) {
+		try{
+			if(selectedTab==0){
+				getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.container,
+						AppUsageFragment.newInstance(position)).commit();
+			}else if(selectedTab==1){
+				getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.container,
+						AppTrendsFragment.newInstance(position)).commit();
+			}else if(selectedTab==2){
+				getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.container,
+						WebTrendsFragment.newInstance(position)).commit();
+			}
 
-		if(selectedTab==0){
-			getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.container,
-					AppUsageFragment.newInstance(position)).commit();
-		}else if(selectedTab==1){
-			getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.container,
-					AppTrendsFragment.newInstance(position)).commit();
-		}else if(selectedTab==2){
-			getSupportFragmentManager()
-			.beginTransaction()
-			.replace(R.id.container,
-					WebTrendsFragment.newInstance(position)).commit();
+		}catch(Exception e){
+
 		}
 		return true;
 	}

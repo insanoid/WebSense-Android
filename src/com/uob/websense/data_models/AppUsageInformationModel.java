@@ -23,6 +23,7 @@ public class AppUsageInformationModel implements Serializable {
 	long currentAcitivtyRunningTime = 0;
 	long startTime;
 	long endTime;
+	String position;
 	String category;
 	
 	
@@ -116,6 +117,8 @@ public class AppUsageInformationModel implements Serializable {
 		values.put("active_time", String.valueOf(getCurrentAcitivtyRunningTime()));
 		values.put("start_time", String.valueOf(getStartTime()));
 		values.put("end_time", String.valueOf(getEndTime()));
+		if(getPosition()!=null)
+			values.put("position", String.valueOf(getPosition()));
 		values.put("synced", false);
 		return values;
 		
@@ -161,6 +164,22 @@ public class AppUsageInformationModel implements Serializable {
 	 */
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+
+	/**
+	 * @return the position
+	 */
+	public String getPosition() {
+		return position;
+	}
+
+
+	/**
+	 * @param position the position to set
+	 */
+	public void setPosition(String position) {
+		this.position = position;
 	}
 
 	

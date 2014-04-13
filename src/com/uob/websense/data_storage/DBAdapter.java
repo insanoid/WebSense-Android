@@ -47,6 +47,7 @@ public class DBAdapter {
 			mDbHelper.openDataBase();
 			mDbHelper.close();
 			mDb = mDbHelper.getWritableDatabase();
+
 		} 
 		catch (SQLException mSQLException) 
 		{

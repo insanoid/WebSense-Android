@@ -19,7 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private final Context mContext;
 	private static String DB_PATH = "";
 	private String dbname = null;
-	private static final int version =23;
+	private static final int version =24;
 	
 	public DatabaseHelper(Context context, String databaseName) {
 		super(context, databaseName, null, version);
@@ -103,7 +103,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
 
 	}
 
