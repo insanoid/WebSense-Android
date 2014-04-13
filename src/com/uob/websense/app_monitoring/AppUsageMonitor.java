@@ -213,7 +213,8 @@ public class AppUsageMonitor extends IntentService {
 			SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
 			appDataProvider.createDatabase();
 			appDataProvider.open();
-			appDataProvider.save(currentTask);
+			if(currentTask.getApplicationPackageName()!=null)
+				appDataProvider.save(currentTask);
 			appDataProvider.close();
 			currentTask = null;
 		}

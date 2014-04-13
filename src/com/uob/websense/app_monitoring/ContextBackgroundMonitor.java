@@ -91,10 +91,10 @@ public class ContextBackgroundMonitor extends IntentService {
 				
 				String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
 				
-				if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIY)){
+				//if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIY)){
 					//Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIY);
 					//Do something.
-				}
+				//}
 				
 			}
 		}

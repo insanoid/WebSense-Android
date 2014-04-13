@@ -59,22 +59,30 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		selectedTab = 0;
-		Intent i = new Intent();  
-		i.setClass(this, com.uob.websense.app_monitoring.AppUsageMonitor.class);
-		startService(i);
-
-		Intent i2 = new Intent();  
-		i2.setClass(this, com.uob.websense.app_monitoring.SyncManager.class);
-		startService(i2);
-
-
-		Intent serviceIntent = new Intent();  
-		serviceIntent.setClass(this, ContextBackgroundMonitor.class);
-		startService(serviceIntent);
-
 		setUpNavigationDrawer();
 		setUpActionBarList();
 
+		Runnable r = new Runnable() {
+			
+			@Override
+			public void run() {
+				Intent i = new Intent();  
+				i.setClass(getApplicationContext(), com.uob.websense.app_monitoring.AppUsageMonitor.class);
+				startService(i);
+
+				Intent i2 = new Intent();  
+				i2.setClass(getApplicationContext(), com.uob.websense.app_monitoring.SyncManager.class);
+				startService(i2);
+
+
+				Intent serviceIntent = new Intent();  
+				serviceIntent.setClass(getApplicationContext(), ContextBackgroundMonitor.class);
+				startService(serviceIntent);
+				
+			}
+		};
+		
+		r.run();
 
 	}
 
