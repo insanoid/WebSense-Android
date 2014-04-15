@@ -19,8 +19,8 @@
     <string name="password">Password</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="accept_privacy">Accept end user license.</string>
-
+    <string name="accept_privacy">I agree to participate.</string>
+<string name="open_agreement">[Read]</string>
     <string-array name="user_type_array">
         <item>Student</item>
         <item>Self-Employed</item>

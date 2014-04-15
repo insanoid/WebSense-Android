@@ -2,18 +2,20 @@ package com.uob.websense.data_models;
 
 import java.net.URL;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WebVistModel {
 
-	String pageTitle, completeURL, hostURL, contentImageURL;
+	String pageTitle, completeURL, hostURL;
+	JSONArray contentImageURL;
 
 	public WebVistModel(JSONObject j){
 		try {
 			pageTitle = j.has("title")?j.getString("title"):"";
-			completeURL =j.has("url")?j.getString("url"):"";
+			completeURL =j.has("_id")?j.getString("_id"):"";
+			contentImageURL = j.has("content_image")?j.getJSONArray("content_image"):new JSONArray();
 			hostURL = new URL(completeURL).getHost().toString();
-			contentImageURL = j.has("content_image")?j.getString("content_image"):"";
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -71,14 +73,14 @@ public class WebVistModel {
 	/**
 	 * @return the contentImageURL
 	 */
-	public String getContentImageURL() {
+	public JSONArray getContentImageURL() {
 		return contentImageURL;
 	}
 
 	/**
 	 * @param contentImageURL the contentImageURL to set
 	 */
-	public void setContentImageURL(String contentImageURL) {
+	public void setContentImageURL(JSONArray contentImageURL) {
 		this.contentImageURL = contentImageURL;
 	}
 }

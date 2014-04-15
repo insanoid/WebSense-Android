@@ -14,6 +14,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.uob.contextframework.ContextManager;
 import com.uob.websense.R;
 import com.uob.websense.adapter.SpinnerAdapter;
 import com.uob.websense.support.Constants;
@@ -76,6 +78,19 @@ public class RegisterActivity extends FragmentActivity {
 			navigateToMain();
 		}
 	}
+	
+	
+	public void onReadBtnClicked(View v){
+		Util.hideSoftKeyboard(this);
+		if(v.getId() == R.id.readBtnLbl){
+
+			Uri uri = Uri.parse(Constants.EULA_URL);
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			startActivity(intent);
+			
+		}
+	}
+	
 
 	public void onBtnClicked(View v){
 		Util.hideSoftKeyboard(this);
@@ -202,10 +217,12 @@ public class RegisterActivity extends FragmentActivity {
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
 
 		RequestParams params = new RequestParams();
+		
 		params.put("username", emailTxt.getText().toString());
 		params.put("password", passwordTxt.getText().toString());
 		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
-
+		params.put("device_info", ContextManager.getPhoneInformation().toJSON());
+		
 		WebSenseRestClient.post(Constants.AUTHENTICATE_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.uob.websense.R;
 import com.uob.websense.adapter.AppTrendsListAdapter;
 import com.uob.websense.data_models.AppUsageInformationModel;
@@ -65,7 +66,11 @@ public class AppTrendsFragment extends ListProgressFragment {
 			requestMethod = Constants.APP_TRENDS_DAILY;
 		}
 		
-		WebSenseRestClient.get(requestMethod, null, new JsonHttpResponseHandler() {
+		RequestParams params = new RequestParams();
+		params.put("auth_token", (Util.getSecurePreference(getActivity().getApplicationContext(),Constants.AUTH_KEY_TOKEN)));
+		params.put("limit","15");
+		
+		WebSenseRestClient.get(requestMethod, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
 

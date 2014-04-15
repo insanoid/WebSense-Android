@@ -6,20 +6,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.uob.contextframework.ContextManager;
 import com.uob.contextframework.support.ContextManagerServices;
 import com.uob.websense.support.Constants;
-import com.uob.websense.support.Util;
 
 public class ContextBackgroundMonitor extends IntentService {
 
 	
 
-	private LocationChangeReciever mLocChangeReciever;
+	private ContextBroadCastReceiver mContextBroadCastReceiver;
 	
 	
 	public ContextBackgroundMonitor(String name) {
@@ -41,6 +39,7 @@ public class ContextBackgroundMonitor extends IntentService {
 	@Override
 	public void onDestroy() {
 
+		unregisterReceiver(mContextBroadCastReceiver);
 		super.onDestroy();
 
 	}
@@ -75,16 +74,18 @@ public class ContextBackgroundMonitor extends IntentService {
 
 		ContextManager mContextManager = new ContextManager(getApplicationContext());
 		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION, 5*10*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY, 5*10*1000L);
 		
-		mLocChangeReciever = new LocationChangeReciever();
-		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIY);
+		mContextBroadCastReceiver = new ContextBroadCastReceiver();
+		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIFY);
 		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
-		registerReceiver(mLocChangeReciever, filterProx);
+		registerReceiver(mContextBroadCastReceiver, filterProx);
+		
 		
 	}
 	
 	// Handler for receiving changes in points.
-		public class LocationChangeReciever extends BroadcastReceiver {
+		public class ContextBroadCastReceiver extends BroadcastReceiver {
 
 			@Override
 			public void onReceive(Context context, Intent intent) {;

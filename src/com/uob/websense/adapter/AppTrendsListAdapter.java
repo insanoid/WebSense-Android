@@ -16,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.uob.websense.R;
@@ -30,8 +31,14 @@ public class AppTrendsListAdapter  extends BaseAdapter {
 	private static LayoutInflater inflater=null;
 	Context ctx;
 	double totalRunningTime;
+	
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
-
+	DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
+    .cacheInMemory(true)
+    .cacheOnDisc(true)
+    .build();
+	
+	
 	public AppTrendsListAdapter(Activity a, ArrayList<AppUsageInformationModel> d,Context _ctx) {
 		activity = a;
 		data = d;
@@ -76,40 +83,36 @@ public class AppTrendsListAdapter  extends BaseAdapter {
 		
 		
 		if(app.getApplicationName().equalsIgnoreCase("")){
-			ApplicationInfo appInfo =null;
+			ApplicationInfo appInfo = null;
 			try {
 				appInfo = ctx.getPackageManager().getApplicationInfo(app.getApplicationPackageName(),0);
 			} catch (NameNotFoundException e) {
 				title.setText(app.getApplicationPackageName());
 				sub_title.setText("");
-				e.printStackTrace();
 			}
 
-			if(appInfo!=null){
+			if(appInfo != null){
 				title.setText(ctx.getPackageManager().getApplicationLabel(appInfo));
 				sub_title.setText("");
 				try {
 					if(app.getApplicationPackageName().equalsIgnoreCase(ctx.getPackageName())){
 						thumb_image.setImageDrawable(ctx.getPackageManager().getApplicationIcon(app.getApplicationPackageName()));
+						sub_title.setText("Monitoring Application");
 					}else{
-						thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_launcher));
+						thumb_image.setImageDrawable(ctx.getPackageManager().getApplicationIcon(app.getApplicationPackageName()));
+						sub_title.setText("Android System Application");
 					}
-					Util.loge("image set for with: "+app.getApplicationPackageName());
 					
 				} catch (NameNotFoundException e) {
 					Util.loge("Issue with: "+app.getApplicationPackageName());
-					//e.printStackTrace();
+					
 				}
 			}
 		}else{
-
 			title.setText(app.getApplicationName());
-			sub_title.setText(app.getCategory()!=null?app.getCategory():"");
-			//acc_txt.setText("Installed");
-
-			//TODO: add loading icon here instead.
+			sub_title.setText(app.getCategory()!=null?app.getCategory():"Android System App.");
 			thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_launcher));
-			imageLoader.displayImage(app.getApplicationIconURL(), thumb_image);
+			imageLoader.displayImage(app.getApplicationIconURL(), thumb_image, imageOptions);
 		}
 		vi.setOnTouchListener(new OnTouchListener() {
 

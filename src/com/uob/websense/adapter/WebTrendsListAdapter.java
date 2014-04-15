@@ -2,9 +2,13 @@ package com.uob.websense.adapter;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +18,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.uob.websense.R;
@@ -26,13 +31,18 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 	private static LayoutInflater inflater=null;
 	Context ctx;
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
-
+	
+	DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
+    .cacheInMemory(true)
+    .cacheOnDisc(true)
+    .build();
+	
 	public WebTrendsListAdapter(Activity a, ArrayList<WebVistModel> d,Context _ctx) {
 		activity = a;
 		data = d;
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		ctx = _ctx;
-
+		
 		if(imageLoader.isInited()==false){
 		imageLoader.init(ImageLoaderConfiguration.createDefault(_ctx));
 		}
@@ -52,7 +62,7 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 		return position;
 	}
 
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		View vi=convertView;
 		if(convertView==null)
 			vi = inflater.inflate(R.layout.web_trends_list_item, null);
@@ -70,32 +80,44 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 		//acc_txt.setText("Installed");
 		if(app.getContentImageURL()!=null){
 			thumb_image.setVisibility(View.VISIBLE);
-			thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_launcher));
-			imageLoader.displayImage(app.getContentImageURL(), thumb_image);
+			thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_action_web_site));
+			try {
+				imageLoader.displayImage(app.getContentImageURL().getString(0), thumb_image,imageOptions);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}else{
 			thumb_image.setVisibility(View.GONE);
 		}
-		vi.setOnTouchListener(new OnTouchListener() {
+	
+		/*
+		 vi.setOnTouchListener(new OnTouchListener() {
+		 
 
 			@SuppressLint("NewApi")
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (event.getAction() == MotionEvent.ACTION_DOWN) {
+					
 					v.setBackgroundColor(ctx.getResources().getColor(R.color.brand_green));
 					title.setTextColor(ctx.getResources().getColor(R.color.white));
 					sub_title.setTextColor(ctx.getResources().getColor(R.color.gray));
 					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.white));
+				
 				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
+					
 					title.setTextColor(ctx.getResources().getColor(R.color.black));
 					sub_title.setTextColor(ctx.getResources().getColor(R.color.light_gray));
 					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
 					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.brand_green));
+				
 				}
 
 				return true;
 			}
 		});
-
+*/
 		
 		
 		return vi;

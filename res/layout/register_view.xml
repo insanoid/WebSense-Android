@@ -12,24 +12,21 @@
 
         <!-- android:background="@color/brand_green" -->
 
-      
         <LinearLayout
             android:id="@+id/top_diff_layout"
             android:layout_width="match_parent"
             android:layout_height="1dip"
+            android:layout_gravity="center"
             android:layout_marginBottom="10dip"
             android:background="@color/brand_green"
-            android:orientation="vertical"
             android:gravity="center"
-            android:layout_gravity="center" >
-            
-              <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_brand_logo" />
-            
-              
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_brand_logo" />
         </LinearLayout>
 
         <EditText
@@ -92,12 +89,29 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp" />
 
-            <CheckBox
-                android:id="@+id/accept_policy_checkbox"
+            <LinearLayout
+                android:id="@+id/email_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="@string/accept_privacy" />
+                android:orientation="horizontal" >
+
+                <CheckBox
+                    android:id="@+id/accept_policy_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@string/accept_privacy" />
+
+                <TextView
+                    android:id="@+id/readBtnLbl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:onClick="onReadBtnClicked"
+                    android:clickable="true"
+                    android:text="@string/open_agreement" />
+            </LinearLayout>
         </LinearLayout>
 
         <Button
@@ -146,9 +160,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:background="@drawable/apptheme_btn_secondary_holo_light"
                 android:onClick="onBtnClicked"
-                
-            android:background="@drawable/apptheme_btn_secondary_holo_light"
                 android:text="Looking for a new accout?"
                 android:textColor="@color/white"
                 android:visibility="gone" />

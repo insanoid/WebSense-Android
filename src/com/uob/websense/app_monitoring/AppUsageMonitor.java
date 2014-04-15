@@ -137,7 +137,7 @@ public class AppUsageMonitor extends IntentService {
 		
 
 		mLocationChangeReciever = new LocationChangeReciever();
-		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIY);
+		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIFY);
 		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(mLocationChangeReciever, filterProx);
 		
@@ -284,7 +284,7 @@ public class AppUsageMonitor extends IntentService {
 		@Override
 		public void onReceive(Context context, Intent intent) {;
 
-		Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIY);
+		Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
 			Util.logd("App Monitor Received Location Update: "+ newLocation);
 			knownLocation = newLocation;
 			pushCurrentItem();
