@@ -41,6 +41,16 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 			.beginTransaction()
 			.replace(R.id.container,
 					WebTrendsFragment.newInstance(0)).commit();
+		}else if(position==3){
+			getSupportFragmentManager()
+			.beginTransaction()
+			.replace(R.id.container,
+					AppTrendsFragment.newInstance(0, true)).commit();
+		}else if(position==4){
+			getSupportFragmentManager()
+			.beginTransaction()
+			.replace(R.id.container,
+					WebTrendsFragment.newInstance(0, true)).commit();
 		}
 
 		selectedTab = position;
@@ -156,6 +166,21 @@ NavigationDrawerFragment.NavigationDrawerCallbacks {
 				.replace(R.id.container,
 						WebTrendsFragment.newInstance(position)).commit();
 			}
+			
+			else if(selectedTab==3){
+				getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.container,
+						AppTrendsFragment.newInstance(position, true)).commit();
+			}
+			
+			else if(selectedTab==4){
+				getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.container,
+						WebTrendsFragment.newInstance(position, true)).commit();
+			}
+			
 
 		}catch(Exception e){
 

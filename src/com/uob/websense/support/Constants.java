@@ -52,11 +52,18 @@ public class Constants {
 	public final static String APP_TRENDS_MONTHLY = "app/trends/"+timeAtMonthStart;
 	public final static String APP_TRENDS_DAILY  = "app/trends/"+timeAtMidnight;
 	public final static String APP_TRENDS_WEEKLY = "app/trends/"+timeAtWeekStart;
-
+	
+	public final static String APP_NEARBY_MONTHLY = "app/nearby/"+timeAtMonthStart;
+	public final static String APP_NEARBY_DAILY  = "app/nearby/"+timeAtMidnight;
+	public final static String APP_NEARBY_WEEKLY = "app/nearby/"+timeAtWeekStart;
 
 	public final static String WEB_TRENDS_DAILY  = "web/trends/"+timeAtMidnight;
 	public final static String WEB_TRENDS_WEEKLY = "web/trends/"+timeAtWeekStart;
 	public final static String WEB_TRENDS_MONTHLY = "web/trends/"+timeAtMonthStart;
+
+	public final static String WEB_NEARBY_DAILY  = "web/nearby/"+timeAtMidnight;
+	public final static String WEB_NEARBY_WEEKLY = "web/nearby/"+timeAtWeekStart;
+	public final static String WEB_NEARBY_MONTHLY = "web/nearby/"+timeAtMonthStart;
 	
 	public final static String APP_USAGE_METHOD = "app/update";
 	public final static String REGISTERATION_METHOD = "user/create";

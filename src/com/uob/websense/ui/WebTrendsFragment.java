@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import android.widget.AdapterView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.uob.contextframework.support.LocationsHelper;
 import com.uob.websense.R;
 import com.uob.websense.adapter.WebTrendsListAdapter;
 import com.uob.websense.data_models.WebVistModel;
@@ -42,11 +44,12 @@ public class WebTrendsFragment extends ListProgressFragment {
 		fragment.navigationTabIndex = _type;
 		return fragment;
 	}
-
-	public WebTrendsFragment() {
-
+	
+	public static WebTrendsFragment newInstance(int _type, boolean _isLocalized) {
+		WebTrendsFragment fragment = WebTrendsFragment.newInstance(_type);
+		fragment.isLocalized = _isLocalized;
+		return fragment;
 	}
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,19 +62,42 @@ public class WebTrendsFragment extends ListProgressFragment {
 	private void loadRemoteContent() {
 
 		String requestMethod = null;
-		if(navigationTabIndex==0){
-			requestMethod = Constants.WEB_TRENDS_DAILY;
-		}else if(navigationTabIndex==0){
-			requestMethod = Constants.WEB_TRENDS_WEEKLY;
-		}else if(navigationTabIndex==0){
-			requestMethod = Constants.WEB_TRENDS_MONTHLY;
+		
+		if(isLocalized){
+			if(navigationTabIndex==0){
+				requestMethod = Constants.WEB_NEARBY_DAILY;
+			}else if(navigationTabIndex==1){
+				requestMethod = Constants.WEB_NEARBY_WEEKLY;
+			}else if(navigationTabIndex==2){
+				requestMethod = Constants.WEB_NEARBY_MONTHLY;
+			}else{
+				requestMethod = Constants.WEB_NEARBY_DAILY;
+			}
+
 		}else{
-			requestMethod = Constants.WEB_TRENDS_DAILY;
+			if(navigationTabIndex==0){
+				requestMethod = Constants.WEB_TRENDS_DAILY;
+			}else if(navigationTabIndex==1){
+				requestMethod = Constants.WEB_TRENDS_WEEKLY;
+			}else if(navigationTabIndex==2){
+				requestMethod = Constants.WEB_TRENDS_MONTHLY;
+			}else{
+				requestMethod = Constants.WEB_TRENDS_DAILY;
+			}
 		}
+
+		Location currentLocation = LocationsHelper.getLatestLocation(getActivity());
 
 		RequestParams params = new RequestParams();
 		params.put("auth_token", (Util.getSecurePreference(getActivity().getApplicationContext(),Constants.AUTH_KEY_TOKEN)));
 		params.put("limit","15");
+
+		if(isLocalized){
+			params.put("lat", String.valueOf(currentLocation.getLatitude()));
+			params.put("lng",String.valueOf(currentLocation.getLongitude()));
+		}
+
+		
 		
 		WebSenseRestClient.get(requestMethod, params, new JsonHttpResponseHandler() {
 			@Override
@@ -127,6 +153,9 @@ public class WebTrendsFragment extends ListProgressFragment {
 	private void reloadAdapter() {
 		
 		if(webList!=null){
+			if(getActivity()==null){
+				return;
+			}
 			webListAdapter  = new WebTrendsListAdapter(getActivity(),webList, getActivity().getApplicationContext());
 			applist.setAdapter(webListAdapter);
 

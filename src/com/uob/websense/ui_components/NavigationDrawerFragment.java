@@ -116,7 +116,15 @@ public class NavigationDrawerFragment extends Fragment {
 		
 		HashMap<String, String> items_4 = new HashMap<String, String>();
 		items_4.put("TITLE", getString(R.string.title_section4));
-		items_4.put("ICON", String.valueOf(R.drawable.ic_action_back));
+		items_4.put("ICON", String.valueOf(R.drawable.ic_action_web_site));
+		
+		HashMap<String, String> items_5 = new HashMap<String, String>();
+		items_5.put("TITLE", getString(R.string.title_section5));
+		items_5.put("ICON", String.valueOf(R.drawable.ic_action_web_site));
+		
+		HashMap<String, String> items_6 = new HashMap<String, String>();
+		items_6.put("TITLE", getString(R.string.logout));
+		items_6.put("ICON", String.valueOf(R.drawable.ic_action_back));
 		
 		
 
@@ -125,6 +133,9 @@ public class NavigationDrawerFragment extends Fragment {
 		itemList.add(items_2);
 		itemList.add(items_3);
 		itemList.add(items_4);
+		itemList.add(items_5);
+		itemList.add(items_6);
+
 
 		mDrawerListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -223,7 +234,7 @@ public class NavigationDrawerFragment extends Fragment {
 	private void selectItem(int position) {
 		mCurrentSelectedPosition = position;
 		
-		if(position==3){
+		if(position==5){
 			mDrawerLayout.closeDrawer(mFragmentContainerView);
 			Util.restart(getActivity(), 1);
 			return;

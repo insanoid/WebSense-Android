@@ -82,7 +82,9 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 			thumb_image.setVisibility(View.VISIBLE);
 			thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_action_web_site));
 			try {
+				if(app.getContentImageURL().length()>0){
 				imageLoader.displayImage(app.getContentImageURL().getString(0), thumb_image,imageOptions);
+				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

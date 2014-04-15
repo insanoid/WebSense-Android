@@ -21,6 +21,7 @@ public class ListProgressFragment  extends Fragment {
 	protected  View rootView;
 	protected  ListView applist;
 	protected  int navigationTabIndex;
+	protected  boolean isLocalized;
 	protected  ProgressBar loadingSpinner;
 	
 	public static ListProgressFragment newInstance() {
