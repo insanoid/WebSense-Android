@@ -58,7 +58,7 @@ public class AppUsageMonitor extends IntentService {
 	public void onDestroy() {
 
 		super.onDestroy();
-
+		unregisterReceiver(mLocationChangeReciever);
 	}
 
 	@Override
