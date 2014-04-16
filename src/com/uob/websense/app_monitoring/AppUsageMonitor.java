@@ -42,7 +42,7 @@ public class AppUsageMonitor extends IntentService {
 	private Timer timer = null;
 	private Location knownLocation;
 
-	LocationChangeReciever mLocationChangeReciever;
+	LocationChangeReceiver mLocationChangeReciever;
 
 	public AppUsageMonitor(String name) {
 		super(name);
@@ -134,13 +134,13 @@ public class AppUsageMonitor extends IntentService {
 				}
 			}
 		};
-		
 
-		mLocationChangeReciever = new LocationChangeReciever();
-		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIFY);
+
+		mLocationChangeReciever = new LocationChangeReceiver();
+		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.CONTEXT_CHANGE_NOTIFY);
 		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(mLocationChangeReciever, filterProx);
-		
+
 
 		getApplicationContext().registerReceiver(mPowerKeyReceiver, theFilter);
 		timer = new Timer(Constants.LOG_TAG);
@@ -207,10 +207,10 @@ public class AppUsageMonitor extends IntentService {
 		if(currentTask!=null){
 			long seconds = System.currentTimeMillis();
 			currentTask.setEndTime(seconds);
-			
+
 			if(currentTask.getPosition()==null && knownLocation!=null)
 				currentTask.setPosition(knownLocation.getLatitude()+","+knownLocation.getLongitude());
-			
+
 			SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
 			appDataProvider.createDatabase();
 			appDataProvider.open();
@@ -267,7 +267,7 @@ public class AppUsageMonitor extends IntentService {
 		long seconds = System.currentTimeMillis();
 		if(knownLocation!=null)
 			currentTask.setPosition(knownLocation.getLatitude()+","+knownLocation.getLongitude());
-	
+
 		currentTask.setStartTime(seconds);
 		currentTask.setApplicationName(appInfo.get(Constants.APP_NAME_TAG));
 		currentTask.setApplicationPackageName(appInfo.get(Constants.APP_PACKAGE_NAME_TAG));
@@ -279,15 +279,20 @@ public class AppUsageMonitor extends IntentService {
 	}
 
 	// Handler for receiving changes in points.
-	public class LocationChangeReciever extends BroadcastReceiver {
+	public class LocationChangeReceiver extends BroadcastReceiver {
 
 		@Override
-		public void onReceive(Context context, Intent intent) {;
+		public void onReceive(Context context, Intent intent) {
 
-		Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
-			Util.logd("App Monitor Received Location Update: "+ newLocation);
-			knownLocation = newLocation;
-			pushCurrentItem();
+			String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
+			Util.loge("Context Intent Called: "+ contentType);
+			if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
+				Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
+				Util.loge("-> "+ newLocation);
+				knownLocation = newLocation;
+				pushCurrentItem();
+			}
+
 		}
 	}
 }

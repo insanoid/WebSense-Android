@@ -6,12 +6,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.uob.contextframework.ContextManager;
 import com.uob.contextframework.support.ContextManagerServices;
 import com.uob.websense.support.Constants;
+import com.uob.websense.support.Util;
 
 public class ContextBackgroundMonitor extends IntentService {
 
@@ -38,7 +40,9 @@ public class ContextBackgroundMonitor extends IntentService {
 
 	@Override
 	public void onDestroy() {
-
+		ContextManager mContextManager = new ContextManager(getApplicationContext());
+		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION);
+		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY);
 		unregisterReceiver(mContextBroadCastReceiver);
 		super.onDestroy();
 
@@ -59,7 +63,7 @@ public class ContextBackgroundMonitor extends IntentService {
 	public void onCreate() {
 		super.onCreate();
 		
-		Log.i(Constants.LOG_TAG, "background Created Service.");
+		Log.i(Constants.LOG_TAG, " > background Created Service.");
 		initateMonitoring();
 	}
 
@@ -75,9 +79,11 @@ public class ContextBackgroundMonitor extends IntentService {
 		ContextManager mContextManager = new ContextManager(getApplicationContext());
 		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION, 5*10*1000L);
 		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY, 5*10*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_WIFI, 5*10*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS, 5*10*1000L);
 		
 		mContextBroadCastReceiver = new ContextBroadCastReceiver();
-		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.LOC_NOTIFY);
+		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.CONTEXT_CHANGE_NOTIFY);
 		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(mContextBroadCastReceiver, filterProx);
 		
@@ -91,11 +97,17 @@ public class ContextBackgroundMonitor extends IntentService {
 			public void onReceive(Context context, Intent intent) {;
 				
 				String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
-				
-				//if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIY)){
-					//Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIY);
-					//Do something.
-				//}
+				Util.loge("Context Intent Called: "+ contentType);
+				if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
+					Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
+					Util.loge("-> "+ newLocation);
+				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BATTERY_NOTIFY)){
+					Util.loge("-> "+ intent.getStringExtra(com.uob.contextframework.support.Constants.BATTERY_NOTIFY));
+				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY)){
+					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY));
+				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.WIFI_NOTIFY)){
+					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.WIFI_NOTIFY));
+				}
 				
 			}
 		}
