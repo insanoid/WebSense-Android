@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.os.IBinder;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.uob.contextframework.support.NetworkHelper;
 import com.uob.websense.data_storage.SensorDataWriter;
 import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
@@ -102,30 +103,39 @@ public class SyncManager extends IntentService {
 		super.onCreate();
 	}
 
+	public boolean networkSyncRecommended(int count){
+
+		boolean isWifi = NetworkHelper.getInstance(getApplicationContext()).isWiFiOn(getApplicationContext());
+		if(count > Constants.MIN_RECORD_FOR_SYNC && isWifi==true){
+			return true;
+		}else if
+		(count > Constants.RECORD_THRESHOLD_FOR_FORCED_SYNCED &&
+				NetworkHelper.getInstance(getApplicationContext()).isWiFiOn(getApplicationContext())==false){
+
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 	//App Usage Monitors.
 	public boolean ifAppSyncRequired(){
 
-		/*
-		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
-		int recordCount = appDataProvider.getUnsyncedRecordCount();
-		appDataProvider.close();
-		*/
-		
 		if(Util.getSecurePreference(getApplicationContext(), Constants.APP_INFO_TABLE)==null){
 			Util.updateSyncRecordCount(getApplicationContext());
 		}
 		int recordCount = Integer.parseInt(Util.getSecurePreference(getApplicationContext(), Constants.APP_INFO_TABLE));
-		
-		
+
+
 		Util.logi("Unsycned Records For Apps: " + recordCount);
-		if(recordCount>Constants.MIN_RECORD_FOR_SYNC){
+		if(networkSyncRecommended(recordCount)==true){
 			return true;
 		}
 
 		return false;
 	}
 
-	
+
 	public void syncRecords() {
 
 		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
@@ -139,7 +149,7 @@ public class SyncManager extends IntentService {
 				finalRecord.put("auth_token", (Util.getSecurePreference(getApplicationContext(),Constants.AUTH_KEY_TOKEN)));
 				finalRecord.put("app_info", records);
 			} catch (JSONException e) {
-				
+
 				Util.loge("Error Making Packet: "+ e.toString());
 			}
 			String data = finalRecord.toString();
@@ -151,8 +161,8 @@ public class SyncManager extends IntentService {
 			} catch(Exception e) {
 				Util.loge("Error Making Packet: "+ e.toString());
 			}
-			
-			
+
+
 			WebSenseRestClient.post(getApplicationContext(),Constants.APP_USAGE_METHOD,entity,"application/json",new AsyncHttpResponseHandler() {
 
 				@Override
