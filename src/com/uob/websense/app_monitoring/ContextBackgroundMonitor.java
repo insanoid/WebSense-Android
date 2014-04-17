@@ -46,6 +46,7 @@ public class ContextBackgroundMonitor extends IntentService {
 		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_WIFI);
 		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS);
 		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS);
+		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH);
 		
 		unregisterReceiver(mContextBroadCastReceiver);
 		super.onDestroy();
@@ -86,6 +87,7 @@ public class ContextBackgroundMonitor extends IntentService {
 		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_WIFI, 5*10*1000L);
 		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS, 5*10*1000L);
 		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS, 5*10*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH, 5*10*1000L);
 		
 		mContextBroadCastReceiver = new ContextBroadCastReceiver();
 		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.CONTEXT_CHANGE_NOTIFY);
@@ -114,6 +116,8 @@ public class ContextBackgroundMonitor extends IntentService {
 					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.WIFI_NOTIFY));
 				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.EVENT_NOTIFY)){
 					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.EVENT_NOTIFY));
+				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY)){
+					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY));
 				}
 				
 			}

@@ -103,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+	//CREATE  TABLE "main"."CONTEXT_INFO" ("record_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "position" VARCHAR NOT NULL  DEFAULT [0,0], "battery" VARCHAR NOT NULL , "signal" VARCHAR NOT NULL , "wifi" VARCHAR NOT NULL , "events" VARCHAR NOT NULL , "timestamp" NUMERIC NOT NULL )
 	}
 
 	public String getDbname() {
