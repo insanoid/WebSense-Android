@@ -7,21 +7,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.IBinder;
 import android.util.Log;
 
 import com.uob.contextframework.ContextManager;
 import com.uob.contextframework.support.ContextManagerServices;
+import com.uob.websense.data_models.ContextModel;
+import com.uob.websense.data_storage.SensorDataWriter;
 import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 
 public class ContextBackgroundMonitor extends IntentService {
 
-	
-
 	private ContextBroadCastReceiver mContextBroadCastReceiver;
-	
-	
+	private Location currentlocationInfo;
+
 	public ContextBackgroundMonitor(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
@@ -31,11 +32,11 @@ public class ContextBackgroundMonitor extends IntentService {
 		this("BACKGROUND_SERVICE");
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	protected void onHandleIntent(Intent intent) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class ContextBackgroundMonitor extends IntentService {
 		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS);
 		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS);
 		mContextManager.stopMonitoringContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH);
-		
+
 		unregisterReceiver(mContextBroadCastReceiver);
 		super.onDestroy();
 
@@ -62,12 +63,14 @@ public class ContextBackgroundMonitor extends IntentService {
 	public void onStart(Intent intent, int startid) {
 
 	}
-	
-	
+
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
+		currentlocationInfo = new Location(LocationManager.PASSIVE_PROVIDER);
+		currentlocationInfo.setLatitude(0.0);
+		currentlocationInfo.setLongitude(0.0);
 		Log.i(Constants.LOG_TAG, " > background Created Service.");
 		initateMonitoring();
 	}
@@ -75,51 +78,73 @@ public class ContextBackgroundMonitor extends IntentService {
 	@Override
 	public int onStartCommand(final Intent intent, final int flags, final int startId) {
 		super.onStartCommand(intent, flags, startId);
-		
+
 		return Service.START_STICKY;
 	}
-	
+
 	private void initateMonitoring() {
 
 		ContextManager mContextManager = new ContextManager(getApplicationContext());
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION, 5*10*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY, 5*10*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_WIFI, 5*10*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS, 5*10*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS, 5*10*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH, 5*10*1000L);
-		
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION, 60*60*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY, 10*60*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_WIFI, 30*60*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS, 15*60*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS, 2*60*1000L);
+		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH, 10*60*1000L);
+
 		mContextBroadCastReceiver = new ContextBroadCastReceiver();
 		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.CONTEXT_CHANGE_NOTIFY);
 		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
 		registerReceiver(mContextBroadCastReceiver, filterProx);
-		
-		
-	}
-	
-	// Handler for receiving changes in points.
-		public class ContextBroadCastReceiver extends BroadcastReceiver {
 
-			@Override
-			public void onReceive(Context context, Intent intent) {;
-				
-				String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
-				Util.loge("Context Intent Called: "+ contentType);
-				if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
-					Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
-					Util.loge("-> "+ newLocation);
-				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BATTERY_NOTIFY)){
-					Util.loge("-> "+ intent.getStringExtra(com.uob.contextframework.support.Constants.BATTERY_NOTIFY));
-				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY)){
-					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY));
-				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.WIFI_NOTIFY)){
-					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.WIFI_NOTIFY));
-				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.EVENT_NOTIFY)){
-					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.EVENT_NOTIFY));
-				}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY)){
-					Util.loge("-> "+ intent.getExtras().get(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY));
-				}
-				
-			}
+
+	}
+
+	private void pushData(String contentType, String content) {
+
+		if(content!=null){
+			ContextModel contextModel = new ContextModel();
+			contextModel.setContextType(contentType);
+			contextModel.setContextValue(content);
+			contextModel.setPosition(currentlocationInfo.getLatitude()+","+currentlocationInfo.getLongitude());
+			contextModel.setTimestamp(String.valueOf( System.currentTimeMillis()));
+			SensorDataWriter.ContextDataProvider contextDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
+			contextDataProvider.createDatabase();
+			contextDataProvider.open();
+			contextDataProvider.save(contextModel);
+			contextDataProvider.close();
 		}
+	}
+
+	// Handler for receiving changes in points.
+	public class ContextBroadCastReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {;
+
+		String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
+		
+		if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
+			Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
+			currentlocationInfo = newLocation;
+			
+		}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BATTERY_NOTIFY)){
+			pushData(com.uob.contextframework.support.Constants.BATTERY_NOTIFY,intent.getStringExtra(com.uob.contextframework.support.Constants.BATTERY_NOTIFY));
+
+		}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY)){
+			pushData(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY,intent.getStringExtra(com.uob.contextframework.support.Constants.SIGNAL_NOTIFY));
+
+		}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.WIFI_NOTIFY)){
+			pushData(com.uob.contextframework.support.Constants.WIFI_NOTIFY,intent.getStringExtra(com.uob.contextframework.support.Constants.WIFI_NOTIFY));
+
+		}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.EVENT_NOTIFY)){
+			pushData(com.uob.contextframework.support.Constants.EVENT_NOTIFY,intent.getStringExtra(com.uob.contextframework.support.Constants.EVENT_NOTIFY));
+
+		}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY)){
+			pushData(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY,intent.getStringExtra(com.uob.contextframework.support.Constants.BLUETOOTH_NOTIFY));
+
+		}
+
+		}
+	}
 }

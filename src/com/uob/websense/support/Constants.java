@@ -29,6 +29,7 @@ public class Constants {
 	//Database names
 	public final static String APP_INFO = "APP_INFO.sqlite";
 	public final static String APP_INFO_TABLE = "APP_INFO";
+	public static final String CONTEXT_INFO_TABLE = "CONTEXT_INFO";
 	public final static String APP_INFO_CACHE_TABLE = "APP_INFO_CACHE";
 
 	//Notification Keys.
@@ -73,4 +74,5 @@ public class Constants {
 	public final static String FONT_LIGHT = "ProximaNova-Light.otf";
 	public final static String FONT_REGLUAR = "ProximaNova-Regular.otf";
 
+	
 }

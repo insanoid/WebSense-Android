@@ -19,19 +19,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private final Context mContext;
 	private static String DB_PATH = "";
 	private String dbname = null;
-	private static final int version =24;
-	
+	private static final int version =25;
+
 	public DatabaseHelper(Context context, String databaseName) {
 		super(context, databaseName, null, version);
-		
+
 		setDbname(databaseName);
-		
+
 		if(android.os.Build.VERSION.SDK_INT >= 17){
 			DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
 		} else {
 			DB_PATH = context.getFilesDir().getPath() +"/"+ context.getPackageName() + "/databases/";
 		}
-		
+
 		this.mContext = context;
 	}   
 
@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			}
 		}
 	}
-	
+
 	private boolean checkDataBase() {
 		File dbFile = new File(DB_PATH + dbname);
 		return dbFile.exists();
@@ -65,7 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private void copyDataBase() throws IOException {
 
 		InputStream mInput = mContext.getAssets().open(dbname);
-		
+
 		String outFileName = DB_PATH + dbname;
 		OutputStream mOutput = new FileOutputStream(outFileName);
 		byte[] mBuffer = new byte[1024];
@@ -103,7 +103,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-	//CREATE  TABLE "main"."CONTEXT_INFO" ("record_id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "position" VARCHAR NOT NULL  DEFAULT [0,0], "battery" VARCHAR NOT NULL , "signal" VARCHAR NOT NULL , "wifi" VARCHAR NOT NULL , "events" VARCHAR NOT NULL , "timestamp" NUMERIC NOT NULL )
+		//db.execSQL("CREATE  TABLE  IF NOT EXISTS  \"CONTEXT_INFO\" (\"record_id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"content_type\" TEXT, \"content\" TEXT, \"position\" TEXT NOT NULL  DEFAULT [0,0], \"timestamp\" NUMERIC NOT NULL  DEFAULT 0, \"synced\" BOOL NOT NULL  DEFAULT false)"
+	//);
 	}
 
 	public String getDbname() {

@@ -65,6 +65,7 @@ public class DBAdapter {
 
 	public void insert(ContentValues content,String tableName) {
 		try{
+			Util.loge("TRY Inserting db: "+ content);
 			mDb.insert(tableName, null, content);
 		}catch(Exception e){
 			Util.loge("Error Inserting db: "+ e.toString());

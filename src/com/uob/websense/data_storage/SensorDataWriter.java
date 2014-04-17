@@ -9,6 +9,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.uob.websense.data_models.AppUsageInformationModel;
+import com.uob.websense.data_models.ContextModel;
 import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 
@@ -34,12 +35,12 @@ public class SensorDataWriter {
 			
 			long currentSeconds = System.currentTimeMillis();
 			long time = currentSeconds - (Constants.DAY_MONTH);
-			String query = "DELETE FROM "+ Constants.APP_INFO + " WHERE end_time < "+ String.valueOf(time)+" AND synced = 1";
+			String query = "DELETE FROM "+ Constants.APP_INFO_TABLE + " WHERE end_time < "+ String.valueOf(time)+" AND synced = 1";
 			createDatabase();
 			open();
 			
 			if(super.execute(query)==true){
-				Util.logi("Cleared Synced Outdated Records: ["+ Constants.APP_INFO + "]");
+				Util.logi("Cleared Synced Outdated Records: ["+ Constants.APP_INFO_TABLE + "]");
 			}
 			
 		}
@@ -120,5 +121,49 @@ public class SensorDataWriter {
 			c.close();
 			return apps;
 		}
+	}
+
+	public static class ContextDataProvider extends DBAdapter {
+
+		public ContextDataProvider(Context context) {
+			super(context, Constants.APP_INFO);
+
+		}
+
+		public void save(ContextModel model) {
+			if(model==null){
+				
+			}else{
+				super.insert(model.getContentValues(),Constants.CONTEXT_INFO_TABLE);
+			}
+		}
+
+		public void purgeSyncedRecords(){
+			
+			long currentSeconds = System.currentTimeMillis();
+			long time = currentSeconds - (Constants.DAY_MONTH);
+			String query = "DELETE FROM "+ Constants.CONTEXT_INFO_TABLE + " WHERE end_time < "+ String.valueOf(time)+" AND synced = 1";
+			createDatabase();
+			open();
+			
+			if(super.execute(query)==true){
+				Util.logi("Cleared Synced Outdated Records: ["+ Constants.CONTEXT_INFO_TABLE + "]");
+			}
+			
+		}
+		
+		public int getUnsyncedRecordCount(){
+
+			return super.getUnsyncedRecordCount(Constants.CONTEXT_INFO_TABLE);
+		}
+		
+		public Boolean updateRecords(String ids){
+			return super.updateRecords(ids, Constants.CONTEXT_INFO_TABLE);
+		}
+
+		public JSONArray getUnSyncedAppRecords(int count){
+			return super.getUnSyncedAppRecords(count, Constants.CONTEXT_INFO_TABLE);
+		}
+		
 	}
 }

@@ -203,7 +203,7 @@ public class AppUsageMonitor extends IntentService {
 	};
 
 	public void pushCurrentItem() {
-		exportDB();
+		//exportDB();
 		if(currentTask!=null){
 			long seconds = System.currentTimeMillis();
 			currentTask.setEndTime(seconds);
@@ -257,7 +257,7 @@ public class AppUsageMonitor extends IntentService {
 	}
 
 	public void updateCurrentItem() {
-		//TODO: update current item with the new context.
+	
 	}
 
 	public void initialiseCurrentItem(HashMap<String, String> appInfo) {
@@ -285,10 +285,8 @@ public class AppUsageMonitor extends IntentService {
 		public void onReceive(Context context, Intent intent) {
 
 			String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
-			Util.loge("Context Intent Called: "+ contentType);
 			if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
 				Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
-				Util.loge("-> "+ newLocation);
 				knownLocation = newLocation;
 				pushCurrentItem();
 			}
