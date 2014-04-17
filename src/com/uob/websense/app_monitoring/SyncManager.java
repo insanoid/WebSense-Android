@@ -59,8 +59,13 @@ public class SyncManager extends IntentService {
 	@Override
 	public void onStart(Intent intent, int startid) {
 		if(ifAppSyncRequired()==true && Util.checkForLogin(getApplicationContext())){
-			syncRecords();
+			syncAppRecords();
 		}
+		
+//		if(ifContextSyncRequired()==true && Util.checkForLogin(getApplicationContext())){
+//			syncContextRecords();
+//		}
+		
 	}
 
 	@Override
@@ -122,7 +127,7 @@ public class SyncManager extends IntentService {
 	public boolean ifAppSyncRequired(){
 
 		if(Util.getSecurePreference(getApplicationContext(), Constants.APP_INFO_TABLE)==null){
-			Util.updateSyncRecordCount(getApplicationContext());
+			Util.updateAppSyncRecordCount(getApplicationContext());
 		}
 		int recordCount = Integer.parseInt(Util.getSecurePreference(getApplicationContext(), Constants.APP_INFO_TABLE));
 
@@ -136,7 +141,7 @@ public class SyncManager extends IntentService {
 	}
 
 
-	public void syncRecords() {
+	public void syncAppRecords() {
 
 		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
 		final JSONArray records = appDataProvider.getUnSyncedAppRecords(Constants.RECORD_BATCH_COUNT);
@@ -171,7 +176,7 @@ public class SyncManager extends IntentService {
 					Util.logi("Success Sending Packet: "+ responseString);
 					SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
 					if(appDataProvider.updateRecords(markRecords(records))==true){
-						syncRecords();
+						syncAppRecords();
 					}
 					appDataProvider.close();
 				}
@@ -181,13 +186,91 @@ public class SyncManager extends IntentService {
 				public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
 					Util.loge("Error Sending Packet: "+ responseString);
 					if(statusCode!=404){
-						syncRecords();
+						syncAppRecords();
 					}
 				}
 			});
 
 		}else{
 			Util.logi("Nothing to syncronize - Apps");
+		}
+
+	}
+
+	//Context Sync
+	
+	public boolean ifContextSyncRequired(){
+
+		if(Util.getSecurePreference(getApplicationContext(), Constants.CONTEXT_INFO_TABLE)==null){
+			Util.updateContextSyncRecordCount(getApplicationContext());
+		}
+		int recordCount = 0;
+		try{
+			recordCount = Integer.parseInt(Util.getSecurePreference(getApplicationContext(), Constants.CONTEXT_INFO_TABLE));
+		}catch(Exception e){
+			
+		}
+
+		Util.logi("Unsycned Records For Context: " + recordCount);
+		if(networkSyncRecommended(recordCount)==true){
+			return true;
+		}
+
+		return false;
+	}
+	
+	public void syncContextRecords() {
+
+		SensorDataWriter.ContextDataProvider appDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
+		final JSONArray records = appDataProvider.getUnSyncedAppRecords(Constants.RECORD_BATCH_COUNT);
+		appDataProvider.close();
+
+		if(records.length()>0){
+			JSONObject finalRecord = new JSONObject();
+
+			try {
+				finalRecord.put("auth_token", (Util.getSecurePreference(getApplicationContext(),Constants.AUTH_KEY_TOKEN)));
+				finalRecord.put("context_info", records);
+			} catch (JSONException e) {
+
+				Util.loge("Error Making Packet: "+ e.toString());
+			}
+			String data = finalRecord.toString();
+			StringEntity entity = null;
+			try {
+				entity = new StringEntity(data);
+				entity.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+				entity.setContentEncoding("gzip");
+			} catch(Exception e) {
+				Util.loge("Error Making Packet: "+ e.toString());
+			}
+
+
+			WebSenseRestClient.post(getApplicationContext(),Constants.APP_USAGE_METHOD,entity,"application/json",new AsyncHttpResponseHandler() {
+
+				@Override
+				public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+					Util.logi("Success Sending Packet: "+ responseString);
+					SensorDataWriter.ContextDataProvider appDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
+					if(appDataProvider.updateRecords(markRecords(records))==true){
+						syncAppRecords();
+					}
+					appDataProvider.close();
+				}
+
+
+				@SuppressWarnings("unused")
+				public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+					Util.loge("Error Sending Packet: "+ responseString);
+					if(statusCode!=404){
+						syncAppRecords();
+					}
+				}
+			});
+
+		}else{
+			Util.logi("Nothing to syncronize - Context");
 		}
 
 	}
@@ -215,4 +298,5 @@ public class SyncManager extends IntentService {
 		return null;
 
 	}
+
 }

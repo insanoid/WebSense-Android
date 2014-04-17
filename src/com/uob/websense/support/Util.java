@@ -242,7 +242,7 @@ public class Util {
 		alert.show();
 	}
 	
-	public static void updateSyncRecordCount(Context ctx){
+	public static void updateAppSyncRecordCount(Context ctx){
 
 		SensorDataWriter.AppDataProvider appDataProvider = new SensorDataWriter.AppDataProvider(ctx);
 		int recordCount = appDataProvider.getUnsyncedRecordCount();
@@ -251,6 +251,15 @@ public class Util {
 		Util.saveSecurePreference(ctx, String.valueOf(recordCount), Constants.APP_INFO_TABLE);
 	}
 
+	public static void updateContextSyncRecordCount(Context ctx){
+
+		SensorDataWriter.ContextDataProvider contextDataProvider = new SensorDataWriter.ContextDataProvider(ctx);
+		int recordCount = contextDataProvider.getUnsyncedRecordCount();
+		contextDataProvider.close();
+		Util.logi("Unsycned Records For Context Updated: " + recordCount);
+		Util.saveSecurePreference(ctx, String.valueOf(recordCount), Constants.CONTEXT_INFO_TABLE);
+	}
+	
 	/*
 	 * Checks if the user is already logged in.
 	 */

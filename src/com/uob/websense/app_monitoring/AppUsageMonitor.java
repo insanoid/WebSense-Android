@@ -220,7 +220,7 @@ public class AppUsageMonitor extends IntentService {
 			currentTask = null;
 		}
 
-		Util.updateSyncRecordCount(getApplicationContext());
+		Util.updateAppSyncRecordCount(getApplicationContext());
 	}
 
 	@SuppressWarnings("resource")

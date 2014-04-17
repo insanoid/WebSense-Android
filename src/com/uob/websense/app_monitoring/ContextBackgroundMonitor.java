@@ -113,6 +113,7 @@ public class ContextBackgroundMonitor extends IntentService {
 			contextDataProvider.open();
 			contextDataProvider.save(contextModel);
 			contextDataProvider.close();
+			Util.updateContextSyncRecordCount(getApplicationContext());
 		}
 	}
 
@@ -123,7 +124,7 @@ public class ContextBackgroundMonitor extends IntentService {
 		public void onReceive(Context context, Intent intent) {;
 
 		String contentType = intent.getStringExtra(com.uob.contextframework.support.Constants.INTENT_TYPE);
-		
+		Util.loge("Context broadcast received: "+contentType);
 		if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
 			Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
 			currentlocationInfo = newLocation;
