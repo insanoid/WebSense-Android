@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.data_storage;
 
 import java.io.File;
@@ -13,13 +30,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.uob.websense.support.Util;
 
+/**
+ * Database handling helper.
+ * @author karthikeyaudupa
+ *
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 	private SQLiteDatabase mDataBase; 
 	private final Context mContext;
 	private static String DB_PATH = "";
 	private String dbname = null;
-	private static final int version =25;
+	private static final int version =26;
 
 	public DatabaseHelper(Context context, String databaseName) {
 		super(context, databaseName, null, version);
@@ -103,8 +125,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		//db.execSQL("CREATE  TABLE  IF NOT EXISTS  \"CONTEXT_INFO\" (\"record_id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"content_type\" TEXT, \"content\" TEXT, \"position\" TEXT NOT NULL  DEFAULT [0,0], \"timestamp\" NUMERIC NOT NULL  DEFAULT 0, \"synced\" BOOL NOT NULL  DEFAULT false)"
-	//);
+		
 	}
 
 	public String getDbname() {

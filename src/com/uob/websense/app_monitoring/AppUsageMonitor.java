@@ -1,11 +1,25 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.app_monitoring;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.net.URL;
-import java.nio.channels.FileChannel;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
@@ -21,7 +35,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -31,7 +44,11 @@ import com.uob.websense.data_storage.SensorDataWriter;
 import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 
-
+/**
+ * Background monitoring service for apps
+ * @author karthikeyaudupa
+ *
+ */
 public class AppUsageMonitor extends IntentService {
 
 	private AppUsageInformationModel currentTask = new AppUsageInformationModel();
@@ -223,6 +240,7 @@ public class AppUsageMonitor extends IntentService {
 		Util.updateAppSyncRecordCount(getApplicationContext());
 	}
 
+	/*
 	@SuppressWarnings("resource")
 	public void exportDB(){
 		try {
@@ -248,7 +266,7 @@ public class AppUsageMonitor extends IntentService {
 			e.printStackTrace();
 		}
 	}
-
+*/
 	public void sendIntentNotification() {
 		//Send Broadcast notifying about new app event.
 		Intent proxIntent = new Intent(Constants.APP_CONTENT_CHANGE);  
@@ -268,6 +286,10 @@ public class AppUsageMonitor extends IntentService {
 		if(knownLocation!=null)
 			currentTask.setPosition(knownLocation.getLatitude()+","+knownLocation.getLongitude());
 
+		Calendar rightNow = Calendar.getInstance();
+		long offset = rightNow.get(Calendar.ZONE_OFFSET) + rightNow.get(Calendar.DST_OFFSET);
+		long sinceMidnight = (rightNow.getTimeInMillis() + offset) %(24 * 60 * 60 * 1000L);
+		currentTask.setMinuteOfDay(sinceMidnight/1000L);
 		currentTask.setStartTime(seconds);
 		currentTask.setApplicationName(appInfo.get(Constants.APP_NAME_TAG));
 		currentTask.setApplicationPackageName(appInfo.get(Constants.APP_PACKAGE_NAME_TAG));

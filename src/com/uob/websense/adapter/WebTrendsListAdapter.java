@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.adapter;
 
 import java.util.ArrayList;
@@ -19,34 +36,39 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.uob.websense.R;
 import com.uob.websense.data_models.WebVistModel;
 
+/**
+ * Web trend view's adapter.
+ * @author karthikeyaudupa
+ *
+ */
 public class WebTrendsListAdapter  extends BaseAdapter {
 
 	private Activity activity;
-	private ArrayList<WebVistModel> data;
-	private static LayoutInflater inflater=null;
-	Context ctx;
+	private ArrayList<WebVistModel> webDataArray;
+	private static LayoutInflater inflater = null;
+	Context mContext;
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
-	
+
 	DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
-    .cacheInMemory(true)
-    .cacheOnDisc(true)
-    .build();
-	
-	public WebTrendsListAdapter(Activity a, ArrayList<WebVistModel> d,Context _ctx) {
-		activity = a;
-		data = d;
+	.cacheInMemory(true)
+	.cacheOnDisc(true)
+	.build();
+
+	public WebTrendsListAdapter(Activity _activity, ArrayList<WebVistModel> _data,Context _ctx) {
+		activity = _activity;
+		webDataArray = _data;
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		ctx = _ctx;
-		
+		mContext = _ctx;
+
 		if(imageLoader.isInited()==false){
-		imageLoader.init(ImageLoaderConfiguration.createDefault(_ctx));
+			imageLoader.init(ImageLoaderConfiguration.createDefault(_ctx));
 		}
 	}
 
-	
-	
+
+
 	public int getCount() {
-		return data.size();
+		return webDataArray.size();
 	}
 
 	public Object getItem(int position) {
@@ -58,65 +80,34 @@ public class WebTrendsListAdapter  extends BaseAdapter {
 	}
 
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		View vi=convertView;
-		if(convertView==null)
-			vi = inflater.inflate(R.layout.web_trends_list_item, null);
 
+		View vi=convertView;
+		if(convertView==null){
+			vi = inflater.inflate(R.layout.web_trends_list_item, null);
+		}
 		final TextView title = (TextView)vi.findViewById(R.id.title);
 		final TextView sub_title = (TextView)vi.findViewById(R.id.sub_title);
-		//final TextView acc_txt = (TextView)vi.findViewById(R.id.acc_txt);
 		ImageView thumb_image=(ImageView)vi.findViewById(R.id.list_image);
 
 		WebVistModel app = new WebVistModel();
-		app = data.get(position);
+		app = webDataArray.get(position);
 
 		title.setText(app.getPageTitle());
 		sub_title.setText(app.getHostURL());
-		//acc_txt.setText("Installed");
+
 		if(app.getContentImageURL()!=null){
 			thumb_image.setVisibility(View.VISIBLE);
-			thumb_image.setImageDrawable(ctx.getResources().getDrawable(R.drawable.ic_action_web_site));
+			thumb_image.setImageDrawable(mContext.getResources().getDrawable(R.drawable.ic_action_web_site));
 			try {
 				if(app.getContentImageURL().length()>0){
-				imageLoader.displayImage(app.getContentImageURL().getString(0), thumb_image,imageOptions);
+					imageLoader.displayImage(app.getContentImageURL().getString(0), thumb_image,imageOptions);
 				}
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
 		}else{
 			thumb_image.setVisibility(View.GONE);
-		}
-	
-		/*
-		 vi.setOnTouchListener(new OnTouchListener() {
-		 
-
-			@SuppressLint("NewApi")
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_DOWN) {
-					
-					v.setBackgroundColor(ctx.getResources().getColor(R.color.brand_green));
-					title.setTextColor(ctx.getResources().getColor(R.color.white));
-					sub_title.setTextColor(ctx.getResources().getColor(R.color.gray));
-					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.white));
-				
-				} else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
-					
-					title.setTextColor(ctx.getResources().getColor(R.color.black));
-					sub_title.setTextColor(ctx.getResources().getColor(R.color.light_gray));
-					v.setBackground(ctx.getResources().getDrawable(R.drawable.apptheme_list_selector_holo_light));
-					//acc_txt.setTextColor(ctx.getResources().getColor(R.color.brand_green));
-				
-				}
-
-				return true;
-			}
-		});
-*/
-		
-		
+		}	
 		return vi;
 	}
 

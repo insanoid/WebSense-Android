@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.ui;
 
 import org.apache.http.Header;
@@ -54,7 +71,7 @@ public class RegisterActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		isRegisterView = true;
 		if(Util.checkForLogin(getApplicationContext())==false){
-			
+
 			Util.removeSecurePreference(this, Constants.AUTH_KEY_TOKEN);
 			setContentView(R.layout.register_view);
 			userTypeSpinner = (Spinner) findViewById(R.id.user_type);
@@ -66,20 +83,20 @@ public class RegisterActivity extends FragmentActivity {
 			loginBtn = (Button)findViewById(R.id.login_action_button);
 			registerBtnDmy = (Button)findViewById(R.id.register_action_button_dummy);
 			loginBtnDmy = (Button)findViewById(R.id.login_action_button_dummy);
-			
-			
+
+
 			(loginBtn).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
 			(loginBtnDmy).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
 			(registerBtn).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
 			(registerBtnDmy).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
-			
-			
+
+
 		}else{
 			navigateToMain();
 		}
 	}
-	
-	
+
+
 	public void onReadBtnClicked(View v){
 		Util.hideSoftKeyboard(this);
 		if(v.getId() == R.id.readBtnLbl){
@@ -87,10 +104,10 @@ public class RegisterActivity extends FragmentActivity {
 			Uri uri = Uri.parse(Constants.EULA_URL);
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 			startActivity(intent);
-			
+
 		}
 	}
-	
+
 
 	public void onBtnClicked(View v){
 		Util.hideSoftKeyboard(this);
@@ -197,7 +214,7 @@ public class RegisterActivity extends FragmentActivity {
 				progressDialog.dismiss();
 				if(statusCode==400){
 					showAlert("Invalid request.");
-					
+
 				}else if(statusCode == 401){
 					showAlert("Email and password already exists.");
 				}else{
@@ -217,12 +234,12 @@ public class RegisterActivity extends FragmentActivity {
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
 
 		RequestParams params = new RequestParams();
-		
+
 		params.put("username", emailTxt.getText().toString());
 		params.put("password", passwordTxt.getText().toString());
 		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
 		params.put("device_info", ContextManager.getPhoneInformation().toJSON());
-		
+
 		WebSenseRestClient.post(Constants.AUTHENTICATE_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
@@ -234,13 +251,13 @@ public class RegisterActivity extends FragmentActivity {
 				progressDialog.dismiss();
 				if(statusCode==400){
 					showAlert("Invalid request.");
-					
+
 				}else if(statusCode == 401){
 					showAlert("Invalid username and password.");
 				}else{
 					showAlert(getApplicationContext().getString(R.string.server_error));
 				}
-				
+
 			}
 
 
@@ -248,39 +265,39 @@ public class RegisterActivity extends FragmentActivity {
 
 	}
 
-void handleResponse(String responseString){
-	
-	Object response;
-	try {
-		Util.logi("Real Response:" + responseString);
-		response = Util.parseResponse(responseString);
+	void handleResponse(String responseString){
 
-		if (response instanceof JSONObject) {
-			if(((JSONObject) response).has("auth_token")==true){
-			String auth_key = ((JSONObject) response).getString("auth_token");
-			Util.saveSecurePreference(getApplicationContext(), auth_key, Constants.AUTH_KEY_TOKEN);
-			navigateToMain();
+		Object response;
+		try {
+			Util.logi("Real Response:" + responseString);
+			response = Util.parseResponse(responseString);
+
+			if (response instanceof JSONObject) {
+				if(((JSONObject) response).has("auth_token")==true){
+					String auth_key = ((JSONObject) response).getString("auth_token");
+					Util.saveSecurePreference(getApplicationContext(), auth_key, Constants.AUTH_KEY_TOKEN);
+					navigateToMain();
+				}else{
+					showAlert("Invalid username and password.");
+				}
 			}else{
-				 showAlert("Invalid username and password.");
+				showAlert(getApplicationContext().getString(R.string.server_error));
 			}
-		}else{
+
+		} catch (JSONException e) {
 			showAlert(getApplicationContext().getString(R.string.server_error));
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-	} catch (JSONException e) {
-		showAlert(getApplicationContext().getString(R.string.server_error));
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	
 
-}
+	}
 
 	@SuppressLint("NewApi")
 	public void switchRegistratonOn(){
 
 		if(isRegisterView==false){
-			
+
 			LinearLayout l1 = (LinearLayout)findViewById(R.id.registrationContent);
 			l1.setAlpha(0f);
 			l1.setVisibility(View.VISIBLE);
@@ -288,41 +305,40 @@ void handleResponse(String responseString){
 			.alpha(1f)
 			.setDuration(1000)
 			.setListener(new AnimatorListener() {
-				
+
 				@Override
 				public void onAnimationStart(Animator animation) {
 					registerBtnDmy.setVisibility(View.GONE);
 					loginBtnDmy.setVisibility(View.VISIBLE);
 					loginBtn.setVisibility(View.GONE);
 					registerBtn.setVisibility(View.VISIBLE);
-					
+
 				}
-				
+
 				@Override
 				public void onAnimationRepeat(Animator animation) {
 					// TODO Auto-generated method stub
-					
 				}
-				
+
 				@Override
 				public void onAnimationEnd(Animator animation) {
-					
-					
+
+
 				}
-				
+
 				@Override
 				public void onAnimationCancel(Animator animation) {
 					// TODO Auto-generated method stub
-					
+
 				}
 			});
 			isRegisterView = true;
 			LinearLayout l2 = (LinearLayout)findViewById(R.id.top_diff_layout);
 			l2.getLayoutParams().height = 1;
 
-			
+
 		}else{
-			
+
 			LinearLayout l1 = (LinearLayout)findViewById(R.id.registrationContent);
 			l1.setVisibility(View.VISIBLE);
 			l1.setAlpha(1f);
@@ -331,49 +347,34 @@ void handleResponse(String responseString){
 			.alpha(0f)
 			.setDuration(800)
 			.setListener(new AnimatorListener() {
-				
+
 				@Override
 				public void onAnimationStart(Animator animation) {
-					
+
 					registerBtnDmy.setVisibility(View.VISIBLE);
 					loginBtnDmy.setVisibility(View.GONE);
 					registerBtn.setVisibility(View.GONE);
-					
+
 					isRegisterView = false;
 					LinearLayout l2 = (LinearLayout)findViewById(R.id.top_diff_layout);
 					l2.getLayoutParams().height = 350;	
-					
-					
 				}
-				
+
 				@Override
 				public void onAnimationRepeat(Animator animation) {
 					// TODO Auto-generated method stub
-					
 				}
-				
+
 				@Override
 				public void onAnimationEnd(Animator animation) {
-
 					loginBtn.setVisibility(View.VISIBLE);
-					
-					
-					
-					
 				}
-				
+
 				@Override
 				public void onAnimationCancel(Animator animation) {
 					// TODO Auto-generated method stub
-					
 				}
 			});
-			
-			
-			
-			
-			
-			
 
 		}
 	} 

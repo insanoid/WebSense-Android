@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.app_monitoring;
 
 import java.util.ArrayList;
@@ -26,6 +43,11 @@ import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 import com.uob.websense.web_service_manager.WebSenseRestClient;
 
+/**
+ * Syncronization service to send the information to the server.
+ * @author karthikeyaudupa
+ *
+ */
 public class SyncManager extends IntentService {
 
 	public SyncManager(String name) {
@@ -62,9 +84,9 @@ public class SyncManager extends IntentService {
 			syncAppRecords();
 		}
 		
-//		if(ifContextSyncRequired()==true && Util.checkForLogin(getApplicationContext())){
-//			syncContextRecords();
-//		}
+		if(ifContextSyncRequired()==true && Util.checkForLogin(getApplicationContext())){
+			syncContextRecords();
+		}
 		
 	}
 
@@ -192,13 +214,15 @@ public class SyncManager extends IntentService {
 			});
 
 		}else{
+			SensorDataWriter.AppDataProvider _appDataProvider = new SensorDataWriter.AppDataProvider(getApplicationContext());
+			_appDataProvider.purgeSyncedRecords();
+			_appDataProvider.close();
 			Util.logi("Nothing to syncronize - Apps");
 		}
 
 	}
 
 	//Context Sync
-	
 	public boolean ifContextSyncRequired(){
 
 		if(Util.getSecurePreference(getApplicationContext(), Constants.CONTEXT_INFO_TABLE)==null){
@@ -221,9 +245,9 @@ public class SyncManager extends IntentService {
 	
 	public void syncContextRecords() {
 
-		SensorDataWriter.ContextDataProvider appDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
-		final JSONArray records = appDataProvider.getUnSyncedAppRecords(Constants.RECORD_BATCH_COUNT);
-		appDataProvider.close();
+		SensorDataWriter.ContextDataProvider contextDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
+		final JSONArray records = contextDataProvider.getUnSyncedAppRecords(Constants.RECORD_BATCH_COUNT);
+		contextDataProvider.close();
 
 		if(records.length()>0){
 			JSONObject finalRecord = new JSONObject();
@@ -246,17 +270,17 @@ public class SyncManager extends IntentService {
 			}
 
 
-			WebSenseRestClient.post(getApplicationContext(),Constants.APP_USAGE_METHOD,entity,"application/json",new AsyncHttpResponseHandler() {
+			WebSenseRestClient.post(getApplicationContext(),Constants.CONTEXT_PUSH_METHOD,entity,"application/json",new AsyncHttpResponseHandler() {
 
 				@Override
 				public void onSuccess(int statusCode, Header[] headers, String responseString) {
 
 					Util.logi("Success Sending Packet: "+ responseString);
-					SensorDataWriter.ContextDataProvider appDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
-					if(appDataProvider.updateRecords(markRecords(records))==true){
-						syncAppRecords();
+					SensorDataWriter.ContextDataProvider _contextDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
+					if(_contextDataProvider.updateRecords(markRecords(records))==true){
+						syncContextRecords();
 					}
-					appDataProvider.close();
+					_contextDataProvider.close();
 				}
 
 
@@ -270,6 +294,9 @@ public class SyncManager extends IntentService {
 			});
 
 		}else{
+			SensorDataWriter.ContextDataProvider _contextDataProvider = new SensorDataWriter.ContextDataProvider(getApplicationContext());
+			_contextDataProvider.purgeSyncedRecords();
+			_contextDataProvider.close();
 			Util.logi("Nothing to syncronize - Context");
 		}
 

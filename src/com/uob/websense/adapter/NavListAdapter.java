@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.adapter;
 
 import java.util.ArrayList;
@@ -17,12 +34,17 @@ import android.widget.TextView;
 import com.uob.websense.R;
 import com.uob.websense.support.Util;
 
+/**
+ * Side drawer navigation list adapter.
+ * @author karthikeyaudupa
+ *
+ */
 public class NavListAdapter  extends BaseAdapter {
 
 	private Activity activity;
 	private ArrayList<HashMap<String, String>> data;
 	private static LayoutInflater inflater=null;
-	Context ctx;
+	Context mContext;
 	double totalRunningTime;
 	OnItemClickListener mOnItemClickListener;
 
@@ -30,7 +52,7 @@ public class NavListAdapter  extends BaseAdapter {
 		activity = a;
 		data = d;
 		inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		ctx = _ctx;
+		mContext = _ctx;
 
 
 	}
@@ -48,11 +70,11 @@ public class NavListAdapter  extends BaseAdapter {
 	}
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		View vi=convertView;
-		if(convertView==null)
+		View vi = convertView;
+		if(convertView == null)
 			vi = inflater.inflate(R.layout.nav_list_item, null);
 
-		Util.fixCellFont(ctx, vi);
+		Util.fixCellFont(mContext, vi);
 		final TextView title = (TextView)vi.findViewById(R.id.title);
 		ImageView thumb_image=(ImageView)vi.findViewById(R.id.list_image);
 
@@ -60,11 +82,11 @@ public class NavListAdapter  extends BaseAdapter {
 		app = data.get(position);
 
 		title.setText(app.get("TITLE"));
-		
+
 		try {
 			int iconId = Integer.parseInt(app.get("ICON"));
 			Drawable icon;
-			icon = ctx.getResources().getDrawable(iconId);
+			icon = mContext.getResources().getDrawable(iconId);
 			thumb_image.setImageDrawable(icon);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -73,6 +95,6 @@ public class NavListAdapter  extends BaseAdapter {
 
 		return vi;
 	}
-	
+
 
 }

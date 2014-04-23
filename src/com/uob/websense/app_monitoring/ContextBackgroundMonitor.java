@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.app_monitoring;
 
 import android.app.IntentService;
@@ -18,6 +35,11 @@ import com.uob.websense.data_storage.SensorDataWriter;
 import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 
+/**
+ * Monitoring context information in the background.
+ * @author karthikeyaudupa
+ *
+ */
 public class ContextBackgroundMonitor extends IntentService {
 
 	private ContextBroadCastReceiver mContextBroadCastReceiver;
@@ -85,13 +107,17 @@ public class ContextBackgroundMonitor extends IntentService {
 	private void initateMonitoring() {
 
 		ContextManager mContextManager = new ContextManager(getApplicationContext());
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION, 60*60*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY, 10*60*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_WIFI, 30*60*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS, 15*60*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS, 2*60*1000L);
-		mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH, 10*60*1000L);
-
+		try {
+			mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_LOCATION, 60*60*1000L);
+			mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BATTERY, 10*60*1000L);
+			mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_WIFI, 30*60*1000L);
+			mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_SIGNALS, 15*60*1000L);
+			mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_EVENTS, 2*60*1000L);
+			mContextManager.monitorContext(ContextManagerServices.CTX_FRAMEWORK_BLUETOOTH, 10*60*1000L);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		mContextBroadCastReceiver = new ContextBroadCastReceiver();
 		IntentFilter filterProx = new IntentFilter(com.uob.contextframework.support.Constants.CONTEXT_CHANGE_NOTIFY);
 		filterProx.addCategory(Intent.CATEGORY_DEFAULT);
@@ -128,7 +154,7 @@ public class ContextBackgroundMonitor extends IntentService {
 		if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.LOC_NOTIFY)){
 			Location newLocation = (Location) intent.getExtras().get(com.uob.contextframework.support.Constants.LOC_NOTIFY);
 			currentlocationInfo = newLocation;
-			
+
 		}else if(contentType.equalsIgnoreCase(com.uob.contextframework.support.Constants.BATTERY_NOTIFY)){
 			pushData(com.uob.contextframework.support.Constants.BATTERY_NOTIFY,intent.getStringExtra(com.uob.contextframework.support.Constants.BATTERY_NOTIFY));
 

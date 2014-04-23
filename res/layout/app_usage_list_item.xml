@@ -41,5 +41,15 @@
         android:textColor="@color/light_gray"
         android:textSize="12sp" />
 
+    <ImageButton
+        android:contentDescription=""
+        android:id="@+id/download_app"
+        android:layout_width="30dip"
+        android:layout_height="30dip"
+        android:background="@color/transperent"
+        android:scaleType="fitXY"
+        android:layout_alignRight="@+id/sub_title"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_download" />
 
 </RelativeLayout>

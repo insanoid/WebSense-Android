@@ -1,3 +1,20 @@
+/* **************************************************
+Copyright (c) 2014, University of Birmingham
+Karthikeya Udupa, kxu356@bham.ac.uk
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ ************************************************** */
+
 package com.uob.websense.data_models;
 
 import java.io.Serializable;
@@ -6,15 +23,15 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.uob.websense.support.Util;
-
 import android.content.ContentValues;
 
+/**
+ * Model to store application usage records.
+ * @author karthikeyaudupa
+ *
+ */
 public class AppUsageInformationModel implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 10000L;
 	
 	
@@ -25,6 +42,7 @@ public class AppUsageInformationModel implements Serializable {
 	long endTime;
 	String position;
 	String category;
+	long minuteOfDay;
 	
 	
 	public AppUsageInformationModel(JSONObject j) {
@@ -35,9 +53,7 @@ public class AppUsageInformationModel implements Serializable {
 			setApplicationIconURL(j.has("app_icon")?j.getString("app_icon"):"");
 			
 		} catch (JSONException e) {
-			Util.logv("---------->>>>>>>>>>>>>ISSUE<<<--");
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+
 		}
 	}
 
@@ -117,6 +133,7 @@ public class AppUsageInformationModel implements Serializable {
 		values.put("active_time", String.valueOf(getCurrentAcitivtyRunningTime()));
 		values.put("start_time", String.valueOf(getStartTime()));
 		values.put("end_time", String.valueOf(getEndTime()));
+		values.put("start_minute_day", String.valueOf(getMinuteOfDay()));
 		if(getPosition()!=null)
 			values.put("position", String.valueOf(getPosition()));
 		values.put("synced", false);
@@ -180,6 +197,22 @@ public class AppUsageInformationModel implements Serializable {
 	 */
 	public void setPosition(String position) {
 		this.position = position;
+	}
+
+
+	/**
+	 * @return the minuteOfDay
+	 */
+	public long getMinuteOfDay() {
+		return minuteOfDay;
+	}
+
+
+	/**
+	 * @param l the minuteOfDay to set
+	 */
+	public void setMinuteOfDay(long l) {
+		this.minuteOfDay = l;
 	}
 
 	
