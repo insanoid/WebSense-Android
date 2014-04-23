@@ -21,7 +21,7 @@ import java.util.Calendar;
 
 public class Constants {
 
-	public static Boolean IS_DEBUG = true;
+	public static Boolean IS_DEBUG = false;
 	
 	public final static String AUTH_KEY_TOKEN = "AUTHKEY";
 	

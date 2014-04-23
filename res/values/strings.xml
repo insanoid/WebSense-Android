@@ -3,11 +3,11 @@
 
     <string name="app_name">WebSense</string>
     <string name="title_section1">My App Usage</string>
-    <string name="title_section2">App Usage Trends</string>
-    <string name="title_section3">Web Trends</string>
+    <string name="title_section2">Trending Apps</string>
+    <string name="title_section3">Trending on Web</string>
     <string name="logout">Logout</string>
-    <string name="title_section4">Apps Popular Here</string>
-    <string name="title_section5">Websites Popular Here</string>
+    <string name="title_section4">Trending Here</string>
+    <string name="title_section5">Trending on Web Here</string>
    
     <string name="action_refresh">Refresh</string>
     <string name="sub_section_title1">Today</string>

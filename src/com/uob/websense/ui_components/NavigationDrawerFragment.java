@@ -133,11 +133,11 @@ public class NavigationDrawerFragment extends Fragment {
 		
 		HashMap<String, String> items_4 = new HashMap<String, String>();
 		items_4.put("TITLE", getString(R.string.title_section4));
-		items_4.put("ICON", String.valueOf(R.drawable.ic_action_web_site));
+		items_4.put("ICON", String.valueOf(R.drawable.ic_action_place));
 		
 		HashMap<String, String> items_5 = new HashMap<String, String>();
 		items_5.put("TITLE", getString(R.string.title_section5));
-		items_5.put("ICON", String.valueOf(R.drawable.ic_action_web_site));
+		items_5.put("ICON", String.valueOf(R.drawable.ic_action_place));
 		
 		HashMap<String, String> items_6 = new HashMap<String, String>();
 		items_6.put("TITLE", getString(R.string.logout));
