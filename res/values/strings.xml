@@ -27,8 +27,9 @@
 
     <string-array name="user_type_array">
         <item>Student</item>
-        <item>Self-Employed</item>
-        <item>Normal Employed</item>
+        <item>Researcher</item>
+        <item>Employed (Self/Startups)</item>
+        <item>Employed (Salaried Class)</item>
     </string-array>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
