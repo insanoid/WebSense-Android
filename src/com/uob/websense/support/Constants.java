@@ -38,9 +38,9 @@ public class Constants {
 	public static long DAY_MONTH = 31*(24*60*60*1000L);
 	public static long DAY_WEEK = 7*(24*60*60*1000L);
 
-	public static int MIN_RECORD_FOR_SYNC = 2;
+	public static int MIN_RECORD_FOR_SYNC = 20;
 	public static int RECORD_THRESHOLD_FOR_FORCED_SYNCED = 100;
-	public static int RECORD_BATCH_COUNT = 10;
+	public static int RECORD_BATCH_COUNT = 50;
 	
 
 	//Database names

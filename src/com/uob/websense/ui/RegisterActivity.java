@@ -89,7 +89,8 @@ public class RegisterActivity extends FragmentActivity {
 			(loginBtnDmy).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
 			(registerBtn).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
 			(registerBtnDmy).setTypeface( Typeface.createFromAsset(getApplicationContext().getAssets(), Constants.FONT_BOLD));
-
+			
+			switchRegistratonOn();
 
 		}else{
 			navigateToMain();
@@ -203,7 +204,8 @@ public class RegisterActivity extends FragmentActivity {
 		params.put("gender", String.valueOf(genderTxt.equalsIgnoreCase(getString(R.string.male))?1:2));
 		params.put("job_type",  String.valueOf(userTypeSpinner.getSelectedItemPosition()));
 		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
-
+		params.put("device_info", ContextManager.getPhoneInformation().toJSON().toString());
+		
 		WebSenseRestClient.post(Constants.REGISTERATION_METHOD, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {

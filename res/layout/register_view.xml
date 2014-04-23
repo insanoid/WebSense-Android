@@ -34,11 +34,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
+            android:layout_margin="10dp"
             android:ems="10"
             android:hint="@string/emailaddress"
-            android:inputType="textEmailAddress"
-             >
-<!-- android:text="k@t.com" -->
+            android:inputType="textEmailAddress" >
+
             <requestFocus />
         </EditText>
 
