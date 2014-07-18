@@ -120,14 +120,18 @@ public class AppTrendsFragment extends ListProgressFragment {
 		params.put("limit","15");
 
 		if(isLocalized){
-			params.put("lat", String.valueOf(currentLocation.getLatitude()));
-			params.put("lng",String.valueOf(currentLocation.getLongitude()));
+			try{
+				params.put("lat", String.valueOf(currentLocation.getLatitude()));
+				params.put("lng",String.valueOf(currentLocation.getLongitude()));
+			}catch(Exception e){
+
+			}
 		}
 
 		WebSenseRestClient.get(requestMethod, params, new JsonHttpResponseHandler() {
 			@Override
 			public void onSuccess(int statusCode, Header[] headers, String responseString) {
-
+				
 				Object response;
 				try {
 					response = Util.parseResponse(responseString);

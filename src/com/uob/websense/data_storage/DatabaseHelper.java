@@ -41,7 +41,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private final Context mContext;
 	private static String DB_PATH = "";
 	private String dbname = null;
-	private static final int version =26;
+	private static final int version = 26;
 
 	public DatabaseHelper(Context context, String databaseName) {
 		super(context, databaseName, null, version);

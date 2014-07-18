@@ -60,7 +60,7 @@ public class Util {
 	}
 	
 	public final static void logd(String text) {
-		if(Constants.IS_DEBUG==true){
+		if (Constants.IS_DEBUG ==true){
 			Log.d(Constants.SYNC_LOG_TAG,text);
 		}
 		
@@ -283,7 +283,6 @@ public class Util {
 	public static boolean checkForLogin(Context ctx){
 		
 		String authKey = Util.getSecurePreference(ctx, Constants.AUTH_KEY_TOKEN);
-		logd("AUTH KEY: ---->"+authKey);
 		if(authKey==null){
 			return false;
 		}

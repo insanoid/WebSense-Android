@@ -55,8 +55,9 @@ public class Constants {
 
 	public static final String ARG_SECTION_NUMBER = "section_number";
 	
-	public static final String BASE_URL = "http://54.186.15.10:3001/";
-	public static final String EULA_URL = BASE_URL+"eula";
+	public static final String BASE_URL = "http://147.188.197.13:21129/";
+	//"http://websense.karthikeya.co.uk/";//http://147.188.197.13:21129/";
+	public static final String EULA_URL = "http://websense.karthikeya.co.uk/eula";
 	
 	static long currentSeconds = System.currentTimeMillis();
 	static Calendar rightNow = Calendar.getInstance();
@@ -92,6 +93,6 @@ public class Constants {
 	public final static String FONT_LIGHT = "ProximaNova-Light.otf";
 	public final static String FONT_REGLUAR = "ProximaNova-Regular.otf";
 	
-	public final static String ACRA_MONITORING_URL = "http://54.186.15.10:3002/logs/WebSenseAndroid/";
+	public final static String ACRA_MONITORING_URL = "http://54.201.84.206:4444/logs/WebSenseAndroid/";
 
 }

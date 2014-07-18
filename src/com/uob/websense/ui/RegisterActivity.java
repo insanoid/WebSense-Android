@@ -38,8 +38,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -146,12 +144,10 @@ public class RegisterActivity extends FragmentActivity {
 
 		TextView emailTxt = (TextView)findViewById(R.id.email_address);
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
-		RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioSex);
 		CheckBox acceptCheckBox = (CheckBox)findViewById(R.id.accept_policy_checkbox);
 
 		if(passwordTxt.getText().toString().trim().length()>0 &&
 				Util.isValidEmail(emailTxt.getText()) &&
-				radioGroup.getCheckedRadioButtonId()>0 &&
 				userTypeSpinner.getSelectedItemPosition()!=Spinner.INVALID_POSITION){
 
 			if(acceptCheckBox.isChecked()==false){
@@ -195,13 +191,10 @@ public class RegisterActivity extends FragmentActivity {
 		final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading...");
 		TextView emailTxt = (TextView)findViewById(R.id.email_address);
 		TextView passwordTxt = (TextView)findViewById(R.id.password);
-		RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radioSex);
-		String genderTxt = ((RadioButton)findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
 
 		RequestParams params = new RequestParams();
 		params.put("username", emailTxt.getText().toString());
 		params.put("password", passwordTxt.getText().toString());
-		params.put("gender", String.valueOf(genderTxt.equalsIgnoreCase(getString(R.string.male))?1:2));
 		params.put("job_type",  String.valueOf(userTypeSpinner.getSelectedItemPosition()));
 		params.put("uuid",new DeviceUuidFactory(this).getDeviceUuid().toString());
 		params.put("device_info", ContextManager.getPhoneInformation().toJSON().toString());

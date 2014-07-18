@@ -26,9 +26,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
-import com.uob.websense.support.Constants;
 import com.uob.websense.support.Util;
 
 /**
@@ -56,7 +54,6 @@ public class DBAdapter {
 		} 
 		catch (IOException mIOException) 
 		{
-			Log.e(Constants.LOG_TAG, mIOException.toString() + "  UnableToCreateDatabase");
 			throw new Error("UnableToCreateDatabase");
 		}
 		return this;

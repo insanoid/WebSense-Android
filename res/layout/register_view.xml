@@ -59,29 +59,6 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical" >
 
-            <RadioGroup
-                android:id="@+id/radioSex"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal"
-                android:weightSum="2" >
-
-                <RadioButton
-                    android:id="@+id/male_radio_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/male" />
-
-                <RadioButton
-                    android:id="@+id/female_radio_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:text="@string/female" />
-            </RadioGroup>
 
             <Spinner
                 android:id="@+id/user_type"
@@ -90,7 +67,7 @@
                 android:layout_margin="10dp" />
 
             <LinearLayout
-                android:id="@+id/email_address"
+                android:id="@+id/layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
